@@ -1,0 +1,179 @@
+
+import React from 'react';
+import LessonLayout from '../../../components/LessonLayout';
+import { getLessonBySlug } from '../../../data/curriculum';
+
+export default function Page() {
+  const lesson = getLessonBySlug('/week3/tue');
+  if (!lesson) return <div>Lesson not found</div>;
+
+  return (
+    <LessonLayout lesson={lesson}>
+      
+
+  <section id="template">
+    <h2>1. 프로젝트 템플릿 생성</h2>
+    <p>새 프로젝트를 시작할 때마다 같은 설정을 반복하는 것은 비효율적입니다. 클로드 코드를 사용해서 표준화된 프로젝트 템플릿을 만들고, 이를 재사용합니다.</p>
+
+    <h3>나만의 스타터 템플릿 만들기</h3>
+    <pre><code>{`&gt; FastAPI 프로젝트 스타터 템플릿을 만들어줘.
+  반드시 포함해야 할 것들:
+  - 프로젝트 구조 (앞서 설계한 것)
+  - pyproject.toml (Python 의존성 관리)
+  - .env.example
+  - Docker 설정
+  - GitHub Actions CI
+  - pre-commit hooks (ruff, mypy)
+  - pytest 기본 설정`}</code></pre>
+
+    <h3>템플릿 저장소 만들기</h3>
+    <pre><code>{`&gt; 이 템플릿을 GitHub 템플릿 저장소로 올릴 수 있게 README와 설정을 해줘.
+  "Use this template" 버튼으로 새 프로젝트를 시작할 수 있게.`}</code></pre>
+  </section>
+
+  <section id="deps">
+    <h2>2. 의존성 관리</h2>
+    <p>프로젝트의 의존성을 체계적으로 관리하면 팀원 간 환경 차이로 인한 "내 컴퓨터에서는 됐는데" 문제를 예방할 수 있습니다.</p>
+
+    <h3>의존성 파일 생성</h3>
+    <pre><code>{`&gt; 레시피 공유 서비스에 필요한 Python 패키지를 추천해줘.
+  pyproject.toml 형식으로 작성하고, 각 패키지가 왜 필요한지 주석으로 설명해줘.
+  개발 의존성과 프로덕션 의존성을 분리해줘.`}</code></pre>
+
+    <h3>의존성 버전 고정</h3>
+    <pre><code>{`&gt; 현재 설치된 패키지 목록을 보고, 보안 취약점이 알려진 버전이 있는지 확인해줘.
+  업그레이드가 필요한 패키지와 주의사항을 알려줘.`}</code></pre>
+    <pre><code>{`! pip list | claude -p "이 패키지 목록에서 보안 취약점이 있는 버전이 있으면 알려줘"`}</code></pre>
+
+    <h3>Lock 파일의 중요성</h3>
+    <blockquote>
+      <code>{`poetry.lock`}</code>, <code>{`package-lock.json`}</code>, <code>{`bun.lockb`}</code> 같은 lock 파일은 반드시 git에 커밋하세요. lock 파일 없이는 팀원마다 다른 버전이 설치될 수 있습니다.
+    </blockquote>
+  </section>
+
+  <section id="env">
+    <h2>3. 개발 환경 구성</h2>
+    <p>모든 팀원이 동일한 개발 환경을 사용할 수 있도록 환경 설정을 자동화합니다.</p>
+
+    <h3>설정 스크립트 만들기</h3>
+    <pre><code>{`&gt; 새 팀원이 프로젝트를 clone하고 바로 개발을 시작할 수 있는 setup.sh 스크립트를 만들어줘.
+  macOS와 Linux 모두 지원해야 해.
+  다음을 자동으로 처리해줘:
+  - Python 버전 확인 및 가이드
+  - 가상환경 생성
+  - 의존성 설치
+  - .env 파일 생성 (.env.example 복사)
+  - 데이터베이스 초기화
+  - pre-commit hooks 설치`}</code></pre>
+
+    <h3>환경 변수 관리</h3>
+    <pre><code>{`&gt; .env.example 파일을 만들어줘.
+  각 변수에 설명 주석을 달고,
+  어디서 값을 얻는지도 안내해줘.`}</code></pre>
+    <pre><code>{`# .env.example
+DATABASE_URL=postgresql://user:password@localhost:5432/recipe_db  # 개발용 로컬 DB
+SECRET_KEY=your-secret-key-here  # openssl rand -hex 32 로 생성
+AWS_ACCESS_KEY_ID=                # AWS 콘솔 → IAM에서 발급
+AWS_S3_BUCKET=recipe-images-dev   # S3 버킷 이름`}</code></pre>
+  </section>
+
+  <section id="container">
+    <h2>4. 컨테이너 환경 구성</h2>
+    <p>Docker를 사용하면 로컬 환경 설정 없이도 동일한 환경에서 개발할 수 있습니다.</p>
+
+    <h3>Dockerfile 생성</h3>
+    <pre><code>{`&gt; FastAPI 앱을 위한 프로덕션용 Dockerfile을 만들어줘.
+  다음을 지켜줘:
+  - 멀티 스테이지 빌드로 이미지 크기 최소화
+  - 비루트 사용자로 실행
+  - 헬스체크 포함
+  - 보안 스캔 통과할 수 있게`}</code></pre>
+
+    <h3>docker-compose.yml 작성</h3>
+    <pre><code>{`&gt; 로컬 개발용 docker-compose.yml을 만들어줘.
+  다음 서비스를 포함해줘:
+  - FastAPI 앱
+  - PostgreSQL 15
+  - Redis (캐싱용)
+  - pgAdmin (DB 관리 UI)
+  핫 리로드가 되게 볼륨 마운트도 설정해줘.`}</code></pre>
+
+    <h3>실행 및 확인</h3>
+    <pre><code>{`docker-compose up -d
+docker-compose logs -f app`}</code></pre>
+  </section>
+
+  <section id="test-env">
+    <h2>5. 테스트 환경 부트스트래핑</h2>
+    <pre><code>{`&gt; pytest 기반 테스트 환경을 설정해줘.
+  다음을 포함해줘:
+  - conftest.py (테스트 픽스처)
+  - 테스트용 DB 설정 (실제 DB와 분리)
+  - 팩토리 패턴으로 테스트 데이터 생성
+  - coverage 측정 설정`}</code></pre>
+
+    <h3>테스트 데이터 팩토리</h3>
+    <pre><code>{`&gt; 레시피, 사용자, 댓글 모델을 위한 팩토리 클래스를 만들어줘.
+  factory_boy 라이브러리를 사용하고,
+  Faker로 현실적인 더미 데이터를 생성해줘.`}</code></pre>
+  </section>
+
+  <section id="bootstrap">
+    <h2>6. 부트스트래핑</h2>
+    <p>지금까지 만든 모든 설정을 하나의 명령어로 실행할 수 있게 합니다.</p>
+
+    <pre><code>{`&gt; Makefile을 만들어줘. 자주 사용하는 명령어를 단축키로 정의해줘:
+  - make dev: 개발 서버 시작
+  - make test: 테스트 실행
+  - make lint: 린트 및 타입 체크
+  - make migrate: DB 마이그레이션
+  - make reset-db: DB 초기화 및 시드 데이터 삽입`}</code></pre>
+
+    <h3>첫 번째 실행</h3>
+    <pre><code>{`git clone https://github.com/my/recipe-app
+cd recipe-app
+make setup   # 모든 초기 설정 자동화
+make dev     # 개발 서버 시작`}</code></pre>
+
+    <h3>CLAUDE.md 자동 생성으로 마무리</h3>
+    <p>프로젝트 부트스트래핑의 마지막 단계로, 클로드 코드가 프로젝트를 잘 이해할 수 있도록 CLAUDE.md를 만듭니다:</p>
+    <pre><code>{`&gt; /init
+# 자동 생성된 CLAUDE.md를 검토하고 다음을 추가:
+&gt; CLAUDE.md에 다음 내용을 추가해줘:
+  - make 명령어 요약
+  - 개발 환경 구성 방법 요약
+  - 테스트 실행 방법
+  - "절대 하지 말 것" 섹션 (프로덕션 DB 접근 금지 등)`}</code></pre>
+  </section>
+
+  <section id="troubleshoot">
+    <h2>7. 문제 해결</h2>
+
+    <h3>Docker 이미지가 너무 클 때</h3>
+    <pre><code>{`&gt; 현재 Dockerfile로 빌드한 이미지가 1.2GB야. 줄이고 싶어.
+  멀티 스테이지 빌드와 .dockerignore를 활용해서 최적화해줘.`}</code></pre>
+
+    <h3>환경별 설정 분리</h3>
+    <pre><code>{`&gt; 개발/스테이징/프로덕션 환경마다 다른 설정을 적용해야 해.
+  Pydantic Settings로 환경별 설정을 관리하는 방법을 알려줘.`}</code></pre>
+  </section>
+
+  <section id="checklist">
+    <h2>8. 체크 리스트</h2>
+    <pre><code>{`&gt; 프로젝트 부트스트래핑이 완료되었는지 확인하는 체크리스트를 만들어줘.
+  새 팀원이 합류했을 때 이 체크리스트만 따라하면 바로 개발할 수 있게.`}</code></pre>
+
+    <ul>
+      <li>☐ README.md에 설치 방법 문서화</li>
+      <li>☐ .env.example 업데이트</li>
+      <li>☐ Docker 환경에서 <code>{`docker-compose up`}</code> 성공 확인</li>
+      <li>☐ <code>{`make test`}</code> 통과</li>
+      <li>☐ CI/CD 파이프라인 동작 확인</li>
+      <li>☐ CLAUDE.md 작성</li>
+    </ul>
+  </section>
+
+
+    </LessonLayout>
+  );
+}

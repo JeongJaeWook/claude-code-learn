@@ -1,0 +1,190 @@
+
+import React from 'react';
+import LessonLayout from '../../../components/LessonLayout';
+import { getLessonBySlug } from '../../../data/curriculum';
+
+export default function Page() {
+  const lesson = getLessonBySlug('/week4/fri');
+  if (!lesson) return <div>Lesson not found</div>;
+
+  return (
+    <LessonLayout lesson={lesson}>
+      
+
+  <section id="task-tool">
+    <h2>1. 클로드 코드의 Task Tool과 서브에이전트</h2>
+    <p>
+      클로드 코드는 혼자서 모든 작업을 순차적으로 처리하는 것에 그치지 않습니다. Task Tool을 통해 여러 서브에이전트를 병렬로 실행할 수 있습니다. 복잡하고 독립적인 여러 작업을 동시에 처리해서 시간을 크게 단축합니다.
+    </p>
+
+    <h3>서브에이전트가 유용한 시나리오</h3>
+    <ul>
+      <li>여러 마이크로서비스를 동시에 분석해야 할 때</li>
+      <li>여러 파일에 독립적인 변경을 병렬로 적용할 때</li>
+      <li>서로 다른 관점으로 동시에 검토가 필요할 때</li>
+    </ul>
+
+    <h3>병렬 처리 요청하기</h3>
+    <pre><code>{`&gt; 다음 3개 작업을 병렬로 처리해줘:
+  1. tests/ 폴더 전체의 커버리지를 분석하고 보고서 작성
+  2. src/api/ 폴더의 모든 엔드포인트 문서화
+  3. requirements.txt의 패키지 버전 최신화 가능 여부 확인`}</code></pre>
+
+    <h3>에이전트 간 작업 분배</h3>
+    <pre><code>{`&gt; 이 프로젝트를 동시에 두 관점에서 분석해줘:
+  - 에이전트 1: 보안 취약점 전체 스캔
+  - 에이전트 2: 성능 병목 전체 스캔
+  두 결과를 합쳐서 우선순위 액션 목록을 만들어줘`}</code></pre>
+
+    <h3>Explore 서브에이전트 활용</h3>
+    <p>읽기 전용 탐색은 Explore 서브에이전트에게 위임해서 메인 컨텍스트를 보호하세요:</p>
+    <pre><code>{`&gt; Explore 서브에이전트를 사용해서 이 프로젝트의 전체 폴더 구조와
+  각 모듈의 역할을 분석해줘.
+  결과를 구조화된 마크다운으로 정리해줘.`}</code></pre>
+
+    <h3>주의사항</h3>
+    <blockquote>
+      병렬 서브에이전트들이 같은 파일을 동시에 수정하면 충돌이 발생합니다. 파일 쓰기 작업이 겹치지 않도록 서브에이전트 간 작업 범위를 명확히 나눠주세요. 읽기 전용 작업만 병렬화하고, 쓰기 작업은 순차적으로 진행하는 것이 안전합니다.
+    </blockquote>
+  </section>
+
+  <section id="custom-agent">
+    <h2>2. Custom Subagent</h2>
+    <p>
+      Claude Code SDK를 사용하면 클로드 코드를 프로그래밍 방식으로 제어하는 커스텀 에이전트를 만들 수 있습니다. 반복적인 작업을 완전히 자동화하거나, 특정 작업에 특화된 에이전트를 구축할 수 있습니다.
+    </p>
+
+    <h3>SDK 설치</h3>
+    <pre><code>{`npm install @anthropic-ai/claude-code`}</code></pre>
+
+    <h3>기본 커스텀 에이전트</h3>
+    <pre><code>{`// review-agent.ts
+import {"{"} query {"}"} from "@anthropic-ai/claude-code";
+
+async function reviewPR(prDiff: string) {"{"}
+  const messages = [];
+
+  // 스트리밍으로 응답 수신
+  for await (const message of query({"{"}
+    prompt: \`다음 PR diff를 코드 리뷰해줘:\n\n\${"{"}prDiff{"}"}\`,
+    options: {"{"} maxTurns: 5 {"}"}
+  {"}"})) {"{"}
+    if (message.type === "assistant") {"{"}
+      messages.push(message);
+    {"}"}
+  {"}"}
+
+  return messages;
+{"}"}
+
+// PR diff 가져와서 리뷰
+const diff = await exec("git diff main..HEAD");
+const review = await reviewPR(diff);
+console.log(review);`}</code></pre>
+
+    <h3>도구를 가진 에이전트</h3>
+    <pre><code>{`// 특정 도구만 허용하는 에이전트
+for await (const message of query({"{"}
+  prompt: "레포지토리의 모든 TODO 주석을 GitHub 이슈로 만들어줘",
+  options: {"{"}
+    allowedTools: ["Bash", "mcp__github__create_issue"],
+    maxTurns: 20
+  {"}"}
+{"}"})) {"{"}
+  // 처리
+{"}"})`}</code></pre>
+
+    <h3>실전: 자동화 파이프라인</h3>
+    <pre><code>{`// 밤새 코드 품질 개선 에이전트
+async function nightly_improvement() {"{"}
+  // 1. 테스트 커버리지 분석
+  // 2. 커버리지 낮은 파일 목록 생성
+  // 3. 각 파일에 대해 병렬로 테스트 작성
+  // 4. PR 자동 생성
+{"}"}
+
+// cron으로 새벽 2시에 실행`}</code></pre>
+
+    <h3>헤드리스 모드 — 완전 자동화</h3>
+    <p>사람이 없는 환경(CI/CD, 스케줄 작업)에서 클로드 코드를 실행할 때는 헤드리스 모드를 사용합니다:</p>
+    <pre><code>{`# --dangerously-skip-permissions와 함께 CI에서 사용
+# (반드시 격리된 환경에서만)
+claude --print --dangerously-skip-permissions \
+  "테스트 실패한 파일을 분석하고 수정해줘"
+
+# 또는 SDK의 query() 함수로 프로그래밍 방식으로 제어`}</code></pre>
+  </section>
+
+  <section id="squad">
+    <h2>3. Claude Squad</h2>
+    <p>
+      Claude Squad는 여러 클로드 코드 인스턴스를 병렬로 실행하고 조율하는 오픈소스 도구입니다. 각 인스턴스는 독립적인 git worktree에서 작업하므로 서로 충돌 없이 동시 작업이 가능합니다.
+    </p>
+
+    <h3>설치</h3>
+    <pre><code>{`npm install -g claude-squad`}</code></pre>
+
+    <h3>팀 생성</h3>
+    <pre><code>{`# 3개의 클로드 인스턴스를 생성해서 병렬 작업
+claude-squad create --agents 3 --task "마이크로서비스 분리"`}</code></pre>
+
+    <h3>에이전트별 역할 분리</h3>
+    <pre><code>{`claude-squad run \
+  --agent "architect: 전체 아키텍처 설계" \
+  --agent "backend: API 서버 구현" \
+  --agent "frontend: UI 컴포넌트 구현"`}</code></pre>
+
+    <h3>활용 시나리오</h3>
+    <ul>
+      <li><strong>대규모 리팩토링</strong>: 여러 모듈을 병렬로 리팩토링</li>
+      <li><strong>기능 개발</strong>: 프론트/백엔드를 동시에 개발</li>
+      <li><strong>코드 리뷰</strong>: 여러 에이전트가 서로의 코드를 리뷰</li>
+    </ul>
+  </section>
+
+  <section id="swarm">
+    <h2>4. Claude Swarm</h2>
+    <p>
+      Claude Swarm은 Claude Squad보다 더 고급화된 멀티에이전트 오케스트레이션 도구입니다. 에이전트들이 서로 소통하고, 작업을 위임하고, 결과를 합치는 복잡한 워크플로를 YAML로 정의할 수 있습니다.
+    </p>
+
+    <h3>Swarm 설정 파일</h3>
+    <pre><code>{`# swarm.yml
+orchestrator:
+  model: claude-opus-4-5
+  prompt: |
+    당신은 소프트웨어 개발 팀의 기술 리드입니다.
+    아래 에이전트들을 조율해서 레시피 공유 서비스를 개발하세요.
+
+agents:
+  - name: backend-dev
+    model: claude-sonnet-4-5
+    directory: ./backend
+    prompt: FastAPI 백엔드 개발자. API 엔드포인트 구현 담당.
+
+  - name: frontend-dev
+    model: claude-sonnet-4-5
+    directory: ./frontend
+    prompt: React 프론트엔드 개발자. UI 컴포넌트 구현 담당.
+
+  - name: qa-engineer
+    model: claude-haiku-4-5
+    directory: ./tests
+    prompt: QA 엔지니어. 테스트 작성 및 버그 발견 담당.`}</code></pre>
+
+    <h3>Swarm 실행</h3>
+    <pre><code>{`claude-swarm start --config swarm.yml --task "사용자 프로필 수정 기능 구현"`}</code></pre>
+
+    <h3>에이전트 간 소통</h3>
+    <p>오케스트레이터가 각 에이전트에게 작업을 분배하고, 에이전트들은 결과를 보고하며, 필요하면 다른 에이전트에게 도움을 요청할 수 있습니다.</p>
+
+    <h3>4주차, 그리고 과정 마무리</h3>
+    <blockquote>
+      4주 동안 클로드 코드의 설치부터 멀티에이전트 시스템까지 함께 달려왔습니다. 클로드 코드는 계속 발전하고 있습니다. 오늘 배운 것들이 기초가 되어, 앞으로 나올 새로운 기능들도 빠르게 익힐 수 있을 것입니다. 주말 읽을거리에서 AI 코딩 도구의 미래도 함께 살펴봅시다.
+    </blockquote>
+  </section>
+
+
+    </LessonLayout>
+  );
+}

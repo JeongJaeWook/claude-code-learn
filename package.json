@@ -1,17 +1,19 @@
 {
   "name": "claude-code-learn",
-  "type": "module",
-  "version": "0.0.1",
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
-    "@astrojs/react": "^5.0.0",
-    "astro": "^4.16.18",
     "firebase": "^12.12.0",
+    "next": "^16.2.3",
     "react": "^19.2.5",
     "react-dom": "^19.2.5"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.14",
+    "typescript": "6.0.2"
   }
 }

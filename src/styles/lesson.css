@@ -23,12 +23,12 @@
   height: calc(100vh - var(--header-height));
   overflow-y: auto;
   border-right: 1px solid var(--color-border);
-  padding: 1.5rem 0;
+  padding: 1.25rem 0 1.5rem;
   background: var(--color-bg);
 }
 
 .sidebar-week {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
 }
 
 .sidebar-week-header {
@@ -36,18 +36,18 @@
   align-items: center;
   gap: 0.6rem;
   padding: 0.5rem 1.25rem;
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  color: var(--color-text-muted);
+  color: var(--color-text-faint);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.07em;
   cursor: pointer;
   user-select: none;
 }
 
 .sidebar-week-dot {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   flex-shrink: 0;
 }
@@ -62,7 +62,7 @@
   align-items: center;
   gap: 0.6rem;
   padding: 0.45rem 1.25rem 0.45rem 2.25rem;
-  font-size: 0.85rem;
+  font-size: 0.84rem;
   color: var(--color-text-muted);
   transition: background 0.1s, color 0.1s;
   position: relative;
@@ -122,7 +122,7 @@
 }
 
 .sidebar-day {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 700;
   color: var(--color-text-faint);
   flex-shrink: 0;
@@ -132,44 +132,46 @@
 /* ── 메인 콘텐츠 영역 ── */
 .lesson-main {
   min-width: 0;
-  padding: 2.5rem 2.5rem 4rem;
+  padding: 2.5rem 3rem 5rem;
 }
 
 .lesson-header {
   margin-bottom: 2.5rem;
-  padding-bottom: 1.5rem;
+  padding-bottom: 1.75rem;
   border-bottom: 1px solid var(--color-border);
 }
 
 .lesson-meta {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 0.75rem;
+  gap: 0.6rem;
+  margin-bottom: 0.875rem;
   flex-wrap: wrap;
 }
 
 .lesson-week-label {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 600;
   color: var(--color-text-muted);
 }
 
 .lesson-day-label {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 600;
   padding: 0.2rem 0.6rem;
   border-radius: 999px;
   border: 1px solid var(--color-border);
   color: var(--color-text-muted);
+  background: var(--color-bg-secondary);
 }
 
 .lesson-title {
-  font-size: clamp(1.5rem, 3vw, 2rem);
-  font-weight: 700;
-  line-height: 1.3;
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+  font-weight: 800;
+  line-height: 1.25;
   color: var(--color-text);
-  margin-bottom: 1rem;
+  margin-bottom: 1.1rem;
+  letter-spacing: -0.03em;
 }
 
 .lesson-complete-btn {
@@ -184,19 +186,21 @@
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.18s ease;
   font-family: var(--font-sans);
 }
 
 .lesson-complete-btn:hover {
   border-color: var(--color-accent);
   color: var(--color-accent);
+  background: var(--color-accent-light);
 }
 
 .lesson-complete-btn.completed {
   border-color: var(--color-accent);
   background: var(--color-accent);
   color: #fff;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
 }
 
 /* ── 우측 메모 aside (sticky) ── */
@@ -206,7 +210,6 @@
   height: calc(100vh - var(--header-height) - 3rem);
   overflow-y: auto;
   padding: 1.5rem 1rem 1.5rem 0;
-  /* 스크롤바 얇게 */
   scrollbar-width: thin;
   scrollbar-color: var(--color-border) transparent;
 }
@@ -219,17 +222,16 @@
   border-radius: 999px;
 }
 
-/* note-panel 자체의 margin-top 제거 (aside가 padding으로 처리) */
 .note-aside .note-panel {
   margin-top: 0;
 }
 
 
 .toc-label {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.07em;
   color: var(--color-text-faint);
   margin-bottom: 0.75rem;
   padding-left: 0.5rem;
@@ -241,6 +243,7 @@
   color: var(--color-text-muted);
   border-radius: var(--radius-sm);
   line-height: 1.4;
+  font-size: 0.82rem;
   transition: background 0.1s, color 0.1s;
   text-decoration: none;
 }
@@ -256,7 +259,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
-  margin-top: 3rem;
+  margin-top: 3.5rem;
   padding-top: 2rem;
   border-top: 1px solid var(--color-border);
 }
@@ -271,13 +274,15 @@
   border-radius: var(--radius-md);
   text-decoration: none;
   color: var(--color-text);
-  transition: all 0.15s ease;
+  transition: all 0.18s ease;
 }
 
 .lesson-nav-btn:hover {
   border-color: var(--color-primary);
   color: var(--color-primary);
+  background: var(--color-primary-light);
   text-decoration: none;
+  transform: translateX(-2px);
 }
 
 .lesson-nav-btn.next {
@@ -286,9 +291,14 @@
   margin-left: auto;
 }
 
+.lesson-nav-btn.next:hover {
+  transform: translateX(2px);
+}
+
 .nav-arrow {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   flex-shrink: 0;
+  opacity: 0.7;
 }
 
 .nav-info {
@@ -297,12 +307,12 @@
 
 .nav-label {
   display: block;
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--color-text-muted);
-  margin-bottom: 0.2rem;
+  letter-spacing: 0.07em;
+  color: var(--color-text-faint);
+  margin-bottom: 0.25rem;
 }
 
 .nav-title {
@@ -315,7 +325,6 @@
 }
 
 /* ── 반응형 ── */
-/* 1280px 이하: 메인+메모 패널만 */
 @media (max-width: 1280px) {
   .content-wrapper {
     grid-template-columns: var(--sidebar-width) 1fr;
@@ -325,7 +334,6 @@
   }
 }
 
-/* 768px 이하: 모바일 - 사이드바 숨기고 메인만 */
 @media (max-width: 768px) {
   .content-wrapper {
     grid-template-columns: 1fr;
@@ -334,7 +342,7 @@
     display: none;
   }
   .lesson-main {
-    padding: 1.5rem 1rem 3rem;
+    padding: 1.5rem 1.25rem 3rem;
   }
   .lesson-nav {
     grid-template-columns: 1fr;
@@ -343,9 +351,13 @@
     text-align: left;
     flex-direction: row;
   }
+  .lesson-nav-btn:hover,
+  .lesson-nav-btn.next:hover {
+    transform: none;
+  }
 }
 
-/* ── 모바일 사이드바 오버레이 ── */
+/* ── 모바일 사이드바 버튼 ── */
 .mobile-menu-btn {
   display: none;
   align-items: center;
@@ -354,10 +366,17 @@
   border: 1px solid var(--color-border);
   cursor: pointer;
   color: var(--color-text);
-  font-size: 0.875rem;
+  font-size: 0.84rem;
   font-family: var(--font-sans);
-  padding: 0.4rem 0.75rem;
+  padding: 0.4rem 0.8rem;
   border-radius: var(--radius-sm);
+  font-weight: 600;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.mobile-menu-btn:hover {
+  background: var(--color-bg-hover);
+  border-color: var(--color-primary);
 }
 
 @media (max-width: 768px) {
@@ -370,8 +389,9 @@
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.45);
   z-index: 99;
+  backdrop-filter: blur(2px);
 }
 
 .sidebar-overlay.open {
@@ -388,7 +408,7 @@
   background: var(--color-bg);
   z-index: 100;
   overflow-y: auto;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-lg);
   padding: 1.5rem 0;
   transform: translateX(-100%);
   transition: transform 0.25s ease;

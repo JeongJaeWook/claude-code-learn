@@ -3,7 +3,9 @@
     "allow": [
       "WebFetch(domain:wikidocs.net)",
       "WebSearch",
-      "Bash(npx astro:*)"
+      "Bash(npx astro:*)",
+      "Bash(npm run:*)",
+      "Bash(curl -s http://localhost:4322/)"
     ]
   }
 }

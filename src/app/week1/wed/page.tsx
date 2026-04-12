@@ -1,0 +1,123 @@
+
+import React from 'react';
+import LessonLayout from '../../../components/LessonLayout';
+import { getLessonBySlug } from '../../../data/curriculum';
+
+export default function Page() {
+  const lesson = getLessonBySlug('/week1/wed');
+  if (!lesson) return <div>Lesson not found</div>;
+
+  return (
+    <LessonLayout lesson={lesson}>
+      
+
+  <section id="pc-info">
+    <h2>1. 내가 사용하는 데스크탑/랩탑의 정보를 알아내기</h2>
+    <p>
+      클로드 코드는 AI가 직접 터미널 명령어를 실행할 수 있습니다. 덕분에 "내 컴퓨터 CPU가 뭐야?", "메모리가 얼마나 남았어?" 같은 질문에도 직접 시스템 명령을 실행해서 정확한 답을 줄 수 있습니다.
+    </p>
+    <p>
+      이전까지의 AI 챗봇(ChatGPT, Claude.ai 웹 등)은 인터넷 검색이나 파일 업로드 없이는 여러분의 로컬 환경을 알 수 없었습니다. 클로드 코드는 다릅니다.
+    </p>
+
+    <h3>실습해보기</h3>
+    <p>클로드 코드를 실행하고 아래 질문들을 자유롭게 해보세요:</p>
+    <pre><code>{`&gt; 내 컴퓨터 운영체제와 버전을 알려줘`}</code></pre>
+    <pre><code>{`&gt; CPU 모델명이 뭐야? 코어는 몇 개야?`}</code></pre>
+    <pre><code>{`&gt; 현재 사용 가능한 메모리와 전체 메모리를 알려줘`}</code></pre>
+    <pre><code>{`&gt; 디스크 사용량이 얼마나 돼? 남은 공간은?`}</code></pre>
+
+    <h3>클로드 코드가 실행하는 명령어</h3>
+    <p>뒤에서 클로드 코드가 실제로 어떤 명령어를 실행하는지 보고 싶다면 <code>{`/verbose`}</code>를 먼저 입력하세요. macOS 기준으로 다음과 같은 명령어들이 실행됩니다:</p>
+    <pre><code>{`system_profiler SPHardwareDataType   # CPU, 메모리 정보
+sw_vers                              # macOS 버전
+df -h                                # 디스크 사용량
+top -l 1 | head -20                  # CPU/메모리 현재 사용률`}</code></pre>
+
+    <p>Linux라면 <code>{`uname -a`}</code>, <code>{`lscpu`}</code>, <code>{`free -h`}</code> 등이 실행됩니다. 클로드 코드가 운영체제를 자동으로 감지해서 적합한 명령어를 선택합니다.</p>
+
+    <h3>설치된 프로그램 목록 확인</h3>
+    <pre><code>{`&gt; 내 컴퓨터에 설치된 Python 버전이 뭐야? pip 패키지는 뭐가 있어?`}</code></pre>
+    <pre><code>{`&gt; Node.js와 npm이 설치되어 있어? 버전은?`}</code></pre>
+    <pre><code>{`&gt; Homebrew로 설치된 패키지 목록을 보여줘`}</code></pre>
+
+    <h3>왜 이게 강력한가?</h3>
+    <p>
+      "제 환경에서는 어떻게 설정해야 해요?" 같은 질문에 클로드 코드는 여러분의 실제 환경을 직접 확인한 뒤 맞춤형 답변을 줍니다. 인터넷에서 찾은 일반적인 가이드가 아니라, 내 컴퓨터에 딱 맞는 명령어를 알려주는 것입니다.
+    </p>
+
+    <h3>네트워크 정보 확인</h3>
+    <pre><code>{`&gt; 내 컴퓨터의 IP 주소, 네트워크 인터페이스 목록을 알려줘
+&gt; 현재 열려 있는 포트가 뭐가 있어?
+&gt; localhost:3000에서 뭐가 돌아가고 있어?`}</code></pre>
+
+    <h3>프로세스 분석</h3>
+    <pre><code>{`&gt; CPU를 가장 많이 사용하는 프로세스 5개를 알려줘
+&gt; 메모리를 많이 먹는 프로세스가 뭐야?
+&gt; Docker 컨테이너가 실행 중인 게 있어?`}</code></pre>
+
+    <h3>개발 환경 진단</h3>
+    <p>클로드 코드는 개발 환경 문제도 진단할 수 있습니다:</p>
+    <pre><code>{`&gt; 내 개발 환경이 이 프로젝트를 빌드할 준비가 됐는지 확인해줘.
+  필요한 도구가 빠져 있으면 설치 방법도 알려줘`}</code></pre>
+    <p>클로드 코드가 <code>{`package.json`}</code>이나 <code>{`requirements.txt`}</code>를 확인하고, 필요한 런타임과 도구가 설치되어 있는지 자동으로 점검합니다.</p>
+  </section>
+
+  <section id="local-files">
+    <h2>2. 로컬 파일들의 정보를 읽고 계산하기</h2>
+    <p>
+      클로드 코드의 또 다른 강력한 기능은 내 컴퓨터 안의 파일을 직접 읽고 분석할 수 있다는 것입니다. 이전에는 파일을 직접 복사해서 붙여 넣어야 했지만, 이제 "이 파일 분석해줘"라고만 하면 됩니다.
+    </p>
+
+    <h3>파일 내용 분석</h3>
+    <pre><code>{`&gt; 현재 폴더에 있는 모든 .py 파일의 목적을 설명해줘`}</code></pre>
+    <pre><code>{`&gt; package.json을 읽고 이 프로젝트가 어떤 의존성을 사용하는지 요약해줘`}</code></pre>
+    <pre><code>{`&gt; README.md를 읽고 한국어로 요약해줘`}</code></pre>
+
+    <h3>파일 통계 계산</h3>
+    <pre><code>{`&gt; 이 프로젝트에서 가장 큰 파일 10개를 찾아줘`}</code></pre>
+    <pre><code>{`&gt; 모든 JavaScript 파일의 총 줄 수를 계산해줘`}</code></pre>
+    <pre><code>{`&gt; 지난 7일 안에 수정된 파일이 뭐가 있어?`}</code></pre>
+
+    <h3>실전 예시: 데이터 분석</h3>
+    <p>예를 들어 CSV 파일이 있다면 이렇게 물어볼 수 있습니다:</p>
+    <pre><code>{`&gt; sales_data.csv 파일을 읽고 월별 매출 합계를 계산해줘`}</code></pre>
+    <pre><code>{`&gt; 이 CSV에서 매출이 가장 높은 날짜 Top 5를 찾아줘`}</code></pre>
+    <pre><code>{`&gt; 데이터에서 이상한 값이나 결측치가 있는지 확인해줘`}</code></pre>
+
+    <h3>폴더 구조 파악</h3>
+    <pre><code>{`&gt; 이 프로젝트의 전체 폴더 구조를 트리 형태로 보여줘
+&gt; 그리고 각 폴더의 역할을 추측해서 설명해줘`}</code></pre>
+
+    <h3>실전 예시: 로그 파일 분석</h3>
+    <p>서버 로그나 앱 로그 파일도 강력하게 분석합니다:</p>
+    <pre><code>{`&gt; server.log 파일에서 오늘 발생한 에러를 종류별로 정리해줘
+&gt; 에러가 가장 많이 발생한 시간대와 패턴을 분석해줘
+&gt; 이 로그에서 보안 관련 이상 징후가 있는지 확인해줘`}</code></pre>
+
+    <h3>이미지 분석</h3>
+    <p>클로드 코드는 이미지 파일도 읽을 수 있습니다. 스크린샷, 다이어그램, UI 목업을 분석할 때 유용합니다:</p>
+    <pre><code>{`&gt; @screenshot.png 이 UI 디자인을 HTML/CSS로 구현해줘
+&gt; @diagram.png 이 아키텍처 다이어그램을 설명해줘`}</code></pre>
+
+    <h3>주의사항</h3>
+    <blockquote>
+      클로드 코드는 파일을 읽을 때 여러분의 허가를 구합니다. 민감한 파일(API 키, 비밀번호 등)이 포함된 폴더에서 작업할 때는 어떤 파일이 읽히는지 확인하세요. <code>{`.env`}</code> 파일이나 <code>{`secrets/`}</code> 폴더는 <code>{`.claudeignore`}</code>에 등록해서 제외시킬 수 있습니다.
+    </blockquote>
+
+    <h3>오늘의 실습 과제</h3>
+    <p>클로드 코드를 열고 다음 순서로 실습해보세요:</p>
+    <pre><code>{`# 1. 내 컴퓨터 기본 정보 확인
+&gt; 내 컴퓨터 사양을 요약해줘
+
+# 2. 현재 디렉터리 탐색
+&gt; 현재 폴더에 뭐가 있어? 각 파일/폴더를 간단히 설명해줘
+
+# 3. 가장 최근에 수정한 파일 찾기
+&gt; 가장 최근에 수정된 파일 5개가 뭐야?`}</code></pre>
+  </section>
+
+
+    </LessonLayout>
+  );
+}

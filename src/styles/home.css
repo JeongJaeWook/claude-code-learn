@@ -1,61 +1,99 @@
 /* ── 홈 Hero ── */
 .hero {
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 45%, #0891b2 100%);
   color: #fff;
-  padding: 5rem 2rem 4rem;
+  padding: 5.5rem 2rem 4.5rem;
   text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(255,255,255,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(255,255,255,0.05) 0%, transparent 50%);
+  pointer-events: none;
 }
 
 .hero-badge {
-  display: inline-block;
-  background: rgba(255,255,255,0.2);
-  border: 1px solid rgba(255,255,255,0.3);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25);
   border-radius: 999px;
-  padding: 0.35rem 1rem;
-  font-size: 0.85rem;
-  font-weight: 500;
-  margin-bottom: 1.25rem;
-  backdrop-filter: blur(4px);
+  padding: 0.4rem 1.1rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  backdrop-filter: blur(8px);
+  letter-spacing: 0.02em;
 }
 
 .hero h1 {
   font-size: clamp(2rem, 5vw, 3.25rem);
-  font-weight: 700;
+  font-weight: 800;
   line-height: 1.2;
-  margin-bottom: 1.25rem;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  margin-bottom: 1.35rem;
+  letter-spacing: -0.03em;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.15);
 }
 
 .hero-sub {
-  font-size: 1.15rem;
-  opacity: 0.9;
-  max-width: 560px;
-  margin: 0 auto 2rem;
-  line-height: 1.7;
+  font-size: 1.1rem;
+  opacity: 0.88;
+  max-width: 520px;
+  margin: 0 auto 2.5rem;
+  line-height: 1.8;
 }
 
 .hero-stats {
   display: flex;
   justify-content: center;
-  gap: 2.5rem;
+  gap: 0;
   flex-wrap: wrap;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(8px);
+  max-width: 400px;
+  margin: 0 auto;
+  overflow: hidden;
 }
 
 .hero-stat {
+  flex: 1;
   text-align: center;
+  padding: 1rem 1.5rem;
+  position: relative;
+}
+
+.hero-stat + .hero-stat::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 20%;
+  bottom: 20%;
+  width: 1px;
+  background: rgba(255,255,255,0.2);
 }
 
 .hero-stat-num {
   display: block;
-  font-size: 2rem;
-  font-weight: 700;
+  font-size: 1.6rem;
+  font-weight: 800;
   line-height: 1;
+  letter-spacing: -0.02em;
 }
 
 .hero-stat-label {
-  font-size: 0.85rem;
-  opacity: 0.8;
-  margin-top: 0.25rem;
+  font-size: 0.78rem;
+  opacity: 0.75;
+  margin-top: 0.3rem;
+  font-weight: 500;
 }
 
 /* ── 커리큘럼 섹션 ── */
@@ -67,15 +105,18 @@
 
 .curriculum-section h2 {
   font-size: 1.75rem;
-  font-weight: 700;
+  font-weight: 800;
   margin-bottom: 0.5rem;
   text-align: center;
+  letter-spacing: -0.03em;
+  color: var(--color-text);
 }
 
 .curriculum-section .section-sub {
   text-align: center;
   color: var(--color-text-muted);
   margin-bottom: 3rem;
+  font-size: 1rem;
 }
 
 /* ── 주차 블록 ── */
@@ -86,7 +127,7 @@
 .week-header {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.75rem;
   margin-bottom: 1rem;
 }
 
@@ -94,24 +135,33 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  font-weight: 700;
-  font-size: 0.9rem;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 0.88rem;
   color: #fff;
   flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
-.week-num.w1 { background: var(--color-week1); }
-.week-num.w2 { background: var(--color-week2); }
-.week-num.w3 { background: var(--color-week3); }
-.week-num.w4 { background: var(--color-week4); }
+.week-num.w1 { background: linear-gradient(135deg, var(--color-week1), #818cf8); }
+.week-num.w2 { background: linear-gradient(135deg, var(--color-week2), #34d399); }
+.week-num.w3 { background: linear-gradient(135deg, var(--color-week3), #fbbf24); }
+.week-num.w4 { background: linear-gradient(135deg, var(--color-week4), #f87171); }
 
 .week-title {
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   font-weight: 700;
   color: var(--color-text);
+  letter-spacing: -0.01em;
+}
+
+.week-title-sub {
+  font-size: 0.82rem;
+  font-weight: 400;
+  color: var(--color-text-muted);
+  margin-left: 0.25rem;
 }
 
 /* ── 레슨 카드 그리드 ── */
@@ -132,17 +182,18 @@
 .lesson-card {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
-  background: var(--color-bg-secondary);
+  gap: 0.35rem;
+  background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   padding: 1rem;
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
   text-decoration: none;
   color: var(--color-text);
   position: relative;
   overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 
 .lesson-card::before {
@@ -152,12 +203,13 @@
   left: 0;
   right: 0;
   height: 3px;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
 }
 
-.week-1 .lesson-card::before { background: var(--color-week1); }
-.week-2 .lesson-card::before { background: var(--color-week2); }
-.week-3 .lesson-card::before { background: var(--color-week3); }
-.week-4 .lesson-card::before { background: var(--color-week4); }
+.week-1 .lesson-card::before { background: linear-gradient(90deg, var(--color-week1), #818cf8); }
+.week-2 .lesson-card::before { background: linear-gradient(90deg, var(--color-week2), #34d399); }
+.week-3 .lesson-card::before { background: linear-gradient(90deg, var(--color-week3), #fbbf24); }
+.week-4 .lesson-card::before { background: linear-gradient(90deg, var(--color-week4), #f87171); }
 
 .lesson-card:hover {
   transform: translateY(-3px);
@@ -168,79 +220,87 @@
 
 .lesson-card.completed {
   border-color: var(--color-accent);
+  background: var(--color-accent-light);
+}
+
+html[data-theme="dark"] .lesson-card.completed {
+  background: rgba(16, 185, 129, 0.08);
 }
 
 .lesson-card.completed::after {
   content: '✓';
   position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  width: 20px;
-  height: 20px;
+  top: 0.55rem;
+  right: 0.55rem;
+  width: 18px;
+  height: 18px;
   background: var(--color-accent);
   color: #fff;
   border-radius: 50%;
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-weight: 700;
 }
 
 .card-day {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  color: var(--color-text-muted);
+  color: var(--color-text-faint);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
 }
 
 .card-title {
   font-size: 0.875rem;
-  font-weight: 500;
-  line-height: 1.4;
+  font-weight: 600;
+  line-height: 1.45;
   color: var(--color-text);
 }
 
 .card-count {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: var(--color-text-faint);
   margin-top: auto;
+  padding-top: 0.25rem;
 }
 
 /* ── 진행률 배너 ── */
 .progress-banner {
   background: var(--color-bg-secondary);
   border-bottom: 1px solid var(--color-border);
-  padding: 0.75rem 2rem;
+  padding: 0.875rem 2rem;
   display: flex;
   align-items: center;
   gap: 1.25rem;
 }
 
 .progress-banner-label {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 600;
   color: var(--color-text-muted);
   white-space: nowrap;
 }
 
 .progress-track {
   flex: 1;
-  height: 8px;
+  height: 7px;
   background: var(--color-border);
   border-radius: 999px;
   overflow: hidden;
-  max-width: 300px;
+  max-width: 280px;
 }
 
 .progress-fill {
   height: 100%;
   background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
   border-radius: 999px;
-  transition: width 0.4s ease;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .progress-pct {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 700;
   color: var(--color-primary);
   white-space: nowrap;
@@ -250,38 +310,44 @@
 .cta-section {
   background: var(--color-bg-secondary);
   border-top: 1px solid var(--color-border);
-  padding: 3rem 2rem;
+  padding: 4rem 2rem;
   text-align: center;
 }
 
 .cta-section h2 {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 1.6rem;
+  font-weight: 800;
   margin-bottom: 0.75rem;
+  letter-spacing: -0.03em;
+  color: var(--color-text);
 }
 
 .cta-section p {
   color: var(--color-text-muted);
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.75rem;
+  font-size: 1rem;
 }
 
 .btn-primary {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background: var(--color-primary);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
   color: #fff;
-  padding: 0.75rem 1.75rem;
+  padding: 0.8rem 2rem;
   border-radius: var(--radius-md);
   font-weight: 700;
   font-size: 1rem;
-  transition: background 0.15s ease, transform 0.15s ease;
+  transition: all 0.18s ease;
   text-decoration: none;
+  box-shadow: 0 4px 15px var(--color-primary-glow);
+  letter-spacing: -0.01em;
 }
 
 .btn-primary:hover {
-  background: var(--color-primary-hover);
-  transform: translateY(-1px);
+  background: linear-gradient(135deg, var(--color-primary-hover), #3730a3);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px var(--color-primary-glow);
   text-decoration: none;
   color: #fff;
 }
