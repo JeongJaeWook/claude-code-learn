@@ -1,7 +1,16 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
+import { auth } from '../lib/firebase';
 import { syncProgressToCloud } from '../lib/progress';
-import type { User } from '@supabase/supabase-js';
+import {
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+  onAuthStateChanged,
+} from 'firebase/auth';
+import type { User } from 'firebase/auth';
+
+const provider = new GoogleAuthProvider();
+provider.setCustomParameters({ prompt: 'select_account' });
 
 export default function AuthButton() {
   const [user, setUser] = useState<User | null>(null);
@@ -9,46 +18,33 @@ export default function AuthButton() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
-    // 현재 세션 확인
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setUser(user);
-      setLoading(false);
-    });
-
-    // 인증 상태 변경 수신
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      setUser(session?.user ?? null);
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      const prev = user;
+      setUser(firebaseUser);
       setLoading(false);
 
-      if (event === 'SIGNED_IN') {
-        // 로그인 시 localStorage 진도를 Supabase로 동기화
+      if (firebaseUser && !prev) {
+        // 새로 로그인 시 localStorage 진도를 Firebase로 동기화
         await syncProgressToCloud();
-        // 커스텀 이벤트 발생 - 진도 UI 업데이트
         window.dispatchEvent(new Event('progressUpdated'));
       }
-      if (event === 'SIGNED_OUT') {
+      if (!firebaseUser && prev) {
         window.dispatchEvent(new Event('progressUpdated'));
       }
     });
-
-    return () => subscription.unsubscribe();
+    return () => unsubscribe();
   }, []);
 
   const handleLogin = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: window.location.origin,
-        queryParams: {
-          access_type: 'offline',
-          prompt: 'consent',
-        },
-      },
-    });
+    try {
+      await signInWithPopup(auth, provider);
+    } catch (err) {
+      console.error('로그인 실패:', err);
+    }
   };
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    await signOut(auth);
     setMenuOpen(false);
   };
 
@@ -79,11 +75,8 @@ export default function AuthButton() {
     );
   }
 
-  const avatarUrl = user.user_metadata?.avatar_url as string | undefined;
-  const displayName = (user.user_metadata?.full_name as string | undefined)
-    ?? (user.user_metadata?.name as string | undefined)
-    ?? user.email?.split('@')[0]
-    ?? '사용자';
+  const avatarUrl = user.photoURL ?? undefined;
+  const displayName = user.displayName ?? user.email?.split('@')[0] ?? '사용자';
   const initials = displayName.charAt(0).toUpperCase();
 
   return (
@@ -105,10 +98,7 @@ export default function AuthButton() {
 
       {menuOpen && (
         <>
-          <div
-            className="auth-menu-backdrop"
-            onClick={() => setMenuOpen(false)}
-          />
+          <div className="auth-menu-backdrop" onClick={() => setMenuOpen(false)} />
           <div className="auth-menu" role="menu">
             <div className="auth-menu-info">
               <div className="auth-menu-name">{displayName}</div>

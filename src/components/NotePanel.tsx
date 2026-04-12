@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { saveNote, getNote } from '../lib/progress';
-import type { NoteData } from '../lib/progress';
-import type { DrawingStroke } from '../lib/supabase';
+import type { NoteData, DrawingStroke } from '../lib/progress';
 
 interface NotePanelProps {
   lessonId: string;

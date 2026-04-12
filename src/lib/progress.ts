@@ -1,12 +1,27 @@
 /**
- * 학습 진도 관리 모듈
- * - 로그인 시: Supabase에서 읽고 쓰기
+ * 학습 진도 & 메모 관리 모듈 (Firebase Realtime Database)
+ * - 로그인 시: Firebase에서 읽고 쓰기
  * - 비로그인 시: localStorage fallback
- * - 로그인 시 localStorage → Supabase 자동 동기화
+ * - 로그인 시 localStorage → Firebase 자동 동기화
+ *
+ * DB 구조:
+ * /users/{uid}/progress/{lessonId}: { completed, completedAt }
+ * /users/{uid}/notes/{lessonId}: { textContent, drawingData[] }
  */
 
-import { supabase } from './supabase';
-import type { DrawingStroke } from './supabase';
+import { auth, db } from './firebase';
+import { ref, set, get, update } from 'firebase/database';
+
+export type DrawingStroke = {
+  points: { x: number; y: number }[];
+  color: string;
+  width: number;
+};
+
+export type NoteData = {
+  textContent: string;
+  drawingData: DrawingStroke[];
+};
 
 // ── 진도 저장 ─────────────────────────────────────────────────
 
@@ -16,66 +31,59 @@ export async function markLesson(lessonId: string, completed: boolean): Promise<
   localProgress[lessonId] = completed;
   setLocalProgress(localProgress);
 
-  // 로그인 상태면 Supabase에도 저장
-  const { data: { user } } = await supabase.auth.getUser();
+  // 로그인 상태면 Firebase에도 저장
+  const user = auth.currentUser;
   if (!user) return;
 
-  await supabase.from('user_progress').upsert({
-    user_id: user.id,
-    lesson_id: lessonId,
+  const progressRef = ref(db, `users/${user.uid}/progress/${lessonId}`);
+  await set(progressRef, {
     completed,
-    completed_at: completed ? new Date().toISOString() : null,
-  }, { onConflict: 'user_id,lesson_id' });
+    completedAt: completed ? new Date().toISOString() : null,
+  });
 }
 
 export async function getProgress(): Promise<Record<string, boolean>> {
-  const { data: { user } } = await supabase.auth.getUser();
-
+  const user = auth.currentUser;
   if (!user) {
     return getLocalProgress();
   }
 
-  // Supabase에서 가져오기
-  const { data, error } = await supabase
-    .from('user_progress')
-    .select('lesson_id, completed')
-    .eq('user_id', user.id);
+  try {
+    const progressRef = ref(db, `users/${user.uid}/progress`);
+    const snapshot = await get(progressRef);
+    if (!snapshot.exists()) return getLocalProgress();
 
-  if (error || !data) {
+    const data = snapshot.val() as Record<string, { completed: boolean }>;
+    const progress: Record<string, boolean> = {};
+    Object.entries(data).forEach(([lessonId, val]) => {
+      progress[lessonId] = val.completed;
+    });
+    return progress;
+  } catch {
     return getLocalProgress();
   }
-
-  const progress: Record<string, boolean> = {};
-  data.forEach(row => {
-    progress[row.lesson_id] = row.completed;
-  });
-  return progress;
 }
 
-// 로그인 시 localStorage → Supabase 동기화
+// 로그인 시 localStorage → Firebase 동기화
 export async function syncProgressToCloud(): Promise<void> {
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = auth.currentUser;
   if (!user) return;
 
   const localProgress = getLocalProgress();
   if (Object.keys(localProgress).length === 0) return;
 
-  const rows = Object.entries(localProgress).map(([lessonId, completed]) => ({
-    user_id: user.id,
-    lesson_id: lessonId,
-    completed,
-    completed_at: completed ? new Date().toISOString() : null,
-  }));
+  const updates: Record<string, unknown> = {};
+  Object.entries(localProgress).forEach(([lessonId, completed]) => {
+    updates[`users/${user.uid}/progress/${lessonId}`] = {
+      completed,
+      completedAt: completed ? new Date().toISOString() : null,
+    };
+  });
 
-  await supabase.from('user_progress').upsert(rows, { onConflict: 'user_id,lesson_id' });
+  await update(ref(db), updates);
 }
 
 // ── 메모 저장 ─────────────────────────────────────────────────
-
-export type NoteData = {
-  textContent: string;
-  drawingData: DrawingStroke[];
-};
 
 export async function saveNote(lessonId: string, note: NoteData): Promise<void> {
   // localStorage 항상 업데이트
@@ -83,43 +91,41 @@ export async function saveNote(lessonId: string, note: NoteData): Promise<void> 
   localNotes[lessonId] = note;
   setLocalNotes(localNotes);
 
-  // 로그인 상태면 Supabase에도 저장
-  const { data: { user } } = await supabase.auth.getUser();
+  // 로그인 상태면 Firebase에도 저장
+  const user = auth.currentUser;
   if (!user) return;
 
-  await supabase.from('user_notes').upsert({
-    user_id: user.id,
-    lesson_id: lessonId,
-    text_content: note.textContent,
-    drawing_data: note.drawingData as unknown as never,
-    updated_at: new Date().toISOString(),
-  }, { onConflict: 'user_id,lesson_id' });
+  const noteRef = ref(db, `users/${user.uid}/notes/${lessonId}`);
+  await set(noteRef, {
+    textContent: note.textContent,
+    drawingData: note.drawingData.length > 0 ? note.drawingData : [],
+    updatedAt: new Date().toISOString(),
+  });
 }
 
 export async function getNote(lessonId: string): Promise<NoteData> {
-  const { data: { user } } = await supabase.auth.getUser();
-
+  const user = auth.currentUser;
   if (!user) {
     const localNotes = getLocalNotes();
     return localNotes[lessonId] ?? { textContent: '', drawingData: [] };
   }
 
-  const { data, error } = await supabase
-    .from('user_notes')
-    .select('text_content, drawing_data')
-    .eq('user_id', user.id)
-    .eq('lesson_id', lessonId)
-    .maybeSingle();
-
-  if (error || !data) {
+  try {
+    const noteRef = ref(db, `users/${user.uid}/notes/${lessonId}`);
+    const snapshot = await get(noteRef);
+    if (!snapshot.exists()) {
+      const localNotes = getLocalNotes();
+      return localNotes[lessonId] ?? { textContent: '', drawingData: [] };
+    }
+    const data = snapshot.val();
+    return {
+      textContent: data.textContent ?? '',
+      drawingData: (data.drawingData as DrawingStroke[]) ?? [],
+    };
+  } catch {
     const localNotes = getLocalNotes();
     return localNotes[lessonId] ?? { textContent: '', drawingData: [] };
   }
-
-  return {
-    textContent: data.text_content ?? '',
-    drawingData: (data.drawing_data as unknown as DrawingStroke[]) ?? [],
-  };
 }
 
 // ── localStorage 헬퍼 ─────────────────────────────────────────

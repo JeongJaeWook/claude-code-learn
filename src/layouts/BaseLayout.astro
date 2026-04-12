@@ -6,9 +6,6 @@ export interface Props {
   description?: string;
 }
 const { title = '클로드 코드 배우기', description = '4주 완성 클로드 코드 실습 커리큘럼' } = Astro.props;
-
-const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
-const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 ---
 <!DOCTYPE html>
 <html lang="ko">
