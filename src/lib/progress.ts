@@ -64,10 +64,25 @@ export async function getProgress(): Promise<Record<string, boolean>> {
   }
 }
 
+// 사용자 메타데이터 동기화 (Admin 페이지용)
+export async function syncUserMetadata(): Promise<void> {
+  const user = auth.currentUser;
+  if (!user) return;
+  
+  const metaRef = ref(db, `users/${user.uid}/metadata`);
+  await update(metaRef, {
+    email: user.email || '',
+    displayName: user.displayName || user.email?.split('@')[0] || '사용자',
+    lastSyncAt: new Date().toISOString()
+  });
+}
+
 // 로그인 시 localStorage → Firebase 동기화
 export async function syncProgressToCloud(): Promise<void> {
   const user = auth.currentUser;
   if (!user) return;
+  
+  await syncUserMetadata();
 
   const localProgress = getLocalProgress();
   if (Object.keys(localProgress).length === 0) return;

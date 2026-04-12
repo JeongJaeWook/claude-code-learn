@@ -1,15 +1,19 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import AuthButton from './AuthButton';
 import '../styles/header.css';
+import { auth } from '../lib/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 
 interface HeaderProps {
   showMobileMenu?: boolean;
 }
 
 export default function Header({ showMobileMenu = false }: HeaderProps) {
+  const [isAdmin, setIsAdmin] = useState(false);
+
   useEffect(() => {
     // 테마 토글 초기화
     const btn = document.getElementById('themeToggle');
@@ -20,7 +24,15 @@ export default function Header({ showMobileMenu = false }: HeaderProps) {
       try { localStorage.setItem('theme', next); } catch(e) {}
     };
     btn?.addEventListener('click', handleToggle);
-    return () => btn?.removeEventListener('click', handleToggle);
+    
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setIsAdmin(user?.email === 'admin@claude-code-learn.com');
+    });
+
+    return () => {
+      btn?.removeEventListener('click', handleToggle);
+      unsubscribe();
+    };
   }, []);
 
   return (
@@ -42,6 +54,9 @@ export default function Header({ showMobileMenu = false }: HeaderProps) {
         </div>
         <div className="header-right">
           <Link href="/" className="header-link">홈</Link>
+          {isAdmin && (
+            <Link href="/admin" className="header-link" style={{ color: 'var(--color-primary)', fontWeight: 600 }}>대시보드</Link>
+          )}
           <AuthButton />
           <button className="theme-toggle" id="themeToggle" aria-label="테마 전환">
             <span className="theme-icon light-icon">🌙</span>
