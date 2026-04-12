@@ -50,14 +50,13 @@ const weekTitle = weeks.find(w => w.number === lesson.week)?.title ?? '';
           <slot />
         </div>
 
-        <!-- 메모 패널 -->
-        <NotePanel lessonId={lesson.id} client:only="react" />
-
         <LessonNav prev={lesson.prev} next={lesson.next} />
       </main>
 
-      <!-- 우측 TOC -->
-      <SubsectionTOC subsections={lesson.subsections} />
+      <!-- 우측: 메모 패널 (sticky) -->
+      <aside class="note-aside">
+        <NotePanel lessonId={lesson.id} client:only="react" />
+      </aside>
     </div>
   </div>
 

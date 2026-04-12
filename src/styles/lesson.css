@@ -7,11 +7,13 @@
 
 .content-wrapper {
   display: grid;
-  grid-template-columns: var(--sidebar-width) 1fr var(--toc-width);
+  /* 왼쪽 사이드바 | 메인 콘텐츠 | 우측 메모 패널 */
+  grid-template-columns: var(--sidebar-width) 1fr 340px;
   flex: 1;
-  max-width: 1400px;
+  max-width: 1500px;
   margin: 0 auto;
   width: 100%;
+  align-items: start;
 }
 
 /* ── 사이드바 ── */
@@ -197,16 +199,31 @@
   color: #fff;
 }
 
-/* ── 우측 TOC ── */
-.toc-aside {
+/* ── 우측 메모 aside (sticky) ── */
+.note-aside {
   position: sticky;
-  top: var(--header-height);
-  height: calc(100vh - var(--header-height));
+  top: calc(var(--header-height) + 1.5rem);
+  height: calc(100vh - var(--header-height) - 3rem);
   overflow-y: auto;
-  border-left: 1px solid var(--color-border);
-  padding: 1.5rem 1rem;
-  font-size: 0.8rem;
+  padding: 1.5rem 1rem 1.5rem 0;
+  /* 스크롤바 얇게 */
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
 }
+
+.note-aside::-webkit-scrollbar {
+  width: 4px;
+}
+.note-aside::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 999px;
+}
+
+/* note-panel 자체의 margin-top 제거 (aside가 padding으로 처리) */
+.note-aside .note-panel {
+  margin-top: 0;
+}
+
 
 .toc-label {
   font-size: 0.7rem;
@@ -298,15 +315,17 @@
 }
 
 /* ── 반응형 ── */
-@media (max-width: 1200px) {
+/* 1280px 이하: 메인+메모 패널만 */
+@media (max-width: 1280px) {
   .content-wrapper {
     grid-template-columns: var(--sidebar-width) 1fr;
   }
-  .toc-aside {
+  .note-aside {
     display: none;
   }
 }
 
+/* 768px 이하: 모바일 - 사이드바 숨기고 메인만 */
 @media (max-width: 768px) {
   .content-wrapper {
     grid-template-columns: 1fr;

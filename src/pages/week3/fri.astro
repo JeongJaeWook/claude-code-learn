@@ -28,6 +28,17 @@ const lesson = getLessonBySlug('/week3/fri')!;
     <pre><code>&gt; git diff main..HEAD -- app/api/ 를 보고
   이번 PR에서 API 스펙이 어떻게 변경됐는지 요약해줘.
   Breaking change가 있으면 명확히 표시해줘.</code></pre>
+
+    <h3>README 자동 생성</h3>
+    <p>새 프로젝트나 오픈소스 저장소의 README를 빠르게 만들 수 있습니다:</p>
+    <pre><code>&gt; 이 프로젝트의 README.md를 작성해줘.
+  - 배지(CI, coverage, license)
+  - 한 줄 설명
+  - 주요 기능 스크린샷 플레이스홀더
+  - 빠른 시작 (5분 안에 실행)
+  - API 사용 예시
+  - 기여 가이드 링크
+  개발자가 README를 읽고 5분 안에 시작할 수 있게 써줘.</code></pre>
   </section>
 
   <section id="user-guide">
@@ -116,8 +127,27 @@ const lesson = getLessonBySlug('/week3/fri')!;
   에스컬레이션 경로도 포함해줘.</code></pre>
   </section>
 
+  <section id="diagram">
+    <h2>6. 다이어그램 자동 생성</h2>
+    <p>Mermaid 문법으로 텍스트 기반 다이어그램을 자동 생성합니다. GitHub, Notion 등에서 바로 렌더링됩니다.</p>
+
+    <h3>시퀀스 다이어그램</h3>
+    <pre><code>&gt; 레시피 공유 서비스의 로그인 → 레시피 등록 흐름을
+  Mermaid 시퀀스 다이어그램으로 그려줘.
+  클라이언트, API 서버, 인증 서버, DB, S3를 포함해줘.</code></pre>
+
+    <h3>ERD</h3>
+    <pre><code>&gt; @app/models/ 폴더의 SQLAlchemy 모델들을 읽고
+  Mermaid erDiagram으로 ERD를 그려줘.
+  각 관계의 cardinality도 표시해줘.</code></pre>
+
+    <h3>플로우차트</h3>
+    <pre><code>&gt; 레시피 검색 알고리즘의 로직을 Mermaid flowchart로 그려줘.
+  검색어 처리, 필터링, 정렬, 페이지네이션 단계를 포함해줘.</code></pre>
+  </section>
+
   <section id="checklist">
-    <h2>6. 체크 리스트</h2>
+    <h2>7. 체크 리스트</h2>
     <p>좋은 기술 문서의 조건:</p>
     <ul>
       <li>☐ 대상 독자가 명확한가?</li>
@@ -127,6 +157,11 @@ const lesson = getLessonBySlug('/week3/fri')!;
       <li>☐ "왜"를 설명하고 있는가? (HOW만이 아니라)</li>
       <li>☐ 팀원이 읽고 이해할 수 있는 수준인가? (동료 리뷰)</li>
     </ul>
+
+    <h3>문서 업데이트를 CI에 포함하기</h3>
+    <pre><code>&gt; PR에서 app/api/ 폴더가 변경되면 docs/API.md 업데이트를
+  자동으로 요청하는 GitHub Actions 워크플로를 만들어줘.
+  claude -p 명령어로 변경사항을 분석해서 CHANGELOG도 업데이트해줘.</code></pre>
 
     <blockquote>
       3주차 마무리: 설계부터 배포, 문서화까지 전체 개발 워크플로에 클로드 코드를 통합하는 방법을 배웠습니다. 4주차에서는 클로드 코드 자체를 더 강력하게 커스터마이징하는 방법을 배웁니다.

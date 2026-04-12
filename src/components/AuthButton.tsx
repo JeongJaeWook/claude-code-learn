@@ -101,8 +101,15 @@ export default function AuthButton() {
           <div className="auth-menu-backdrop" onClick={() => setMenuOpen(false)} />
           <div className="auth-menu" role="menu">
             <div className="auth-menu-info">
-              <div className="auth-menu-name">{displayName}</div>
-              <div className="auth-menu-email">{user.email}</div>
+              {avatarUrl ? (
+                <img src={avatarUrl} alt={displayName} className="auth-menu-avatar" />
+              ) : (
+                <div className="auth-menu-avatar-placeholder">{initials}</div>
+              )}
+              <div className="auth-menu-text">
+                <div className="auth-menu-name">{displayName}</div>
+                <div className="auth-menu-email">{user.email}</div>
+              </div>
             </div>
             <hr className="auth-menu-divider" />
             <button

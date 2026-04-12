@@ -26,6 +26,17 @@ git add .
     <pre><code>&gt; GitHub Actions에서 PR이 생성될 때 자동으로 코드 리뷰를 실행하고
   결과를 PR 코멘트로 달아주는 워크플로를 만들어줘.
   claude -p 명령어를 활용해줘.</code></pre>
+
+    <h3>Writer/Reviewer 패턴 — 편향 없는 리뷰</h3>
+    <p>코드를 작성한 세션과 리뷰하는 세션을 분리하면 더 객관적인 리뷰가 가능합니다:</p>
+    <pre><code># 별도 터미널에서 새 claude 세션 시작
+claude
+&gt; @src/api/recipes.py 이 코드를 리뷰해줘.
+  이 코드를 처음 보는 시니어 엔지니어 입장에서 봐줘.
+  - 보안 취약점 (OWASP Top 10 기준)
+  - 예외 처리 누락
+  - 테스트하기 어려운 구조
+  각 이슈를 Critical/High/Medium으로 분류해줘.</code></pre>
   </section>
 
   <section id="refactor">
@@ -44,6 +55,18 @@ git add .
     <pre><code>&gt; create_recipe 함수가 너무 길어서 분리하고 싶어.
   테스트를 깨뜨리지 않으면서 안전하게 리팩토링하는 순서를 알려줘.
   각 단계마다 테스트를 실행할 수 있게 작은 단위로 나눠줘.</code></pre>
+
+    <h3>Git worktree로 안전한 실험</h3>
+    <p>큰 리팩토링을 시도할 때는 git worktree를 활용해서 메인 브랜치를 보호하세요:</p>
+    <pre><code># 별도 디렉터리에서 리팩토링 실험
+git worktree add ../recipe-refactor -b feat/refactor-service-layer
+cd ../recipe-refactor
+claude
+&gt; service layer를 repository pattern으로 리팩토링해줘.
+  기존 테스트가 모두 통과해야 해.
+
+# 결과가 만족스러우면 머지, 아니면 그냥 삭제
+git worktree remove ../recipe-refactor</code></pre>
 
     <h3>리팩토링 자동 실행</h3>
     <pre><code>&gt; validate_recipe_data 함수의 로직이 3곳에 중복되어 있어.
@@ -130,10 +153,15 @@ python -c "import pstats; p = pstats.Stats('profile.stats'); p.sort_stats('cumul
       <li>☐ 현재 테스트 스위트가 통과하는 상태인지 확인</li>
       <li>☐ 성능 기준선(baseline) 측정 완료</li>
       <li>☐ 변경 범위와 위험도 파악</li>
-      <li>☐ 롤백 계획 수립</li>
+      <li>☐ 롤백 계획 수립 (git worktree 또는 feature branch)</li>
       <li>☐ 스테이징 환경에서 먼저 테스트</li>
       <li>☐ 팀원 코드 리뷰 완료</li>
     </ul>
+
+    <h3>claude로 개선 작업 요약 보고서 생성</h3>
+    <pre><code>git diff main..HEAD | claude -p "이번 리팩토링 작업을 요약해줘.
+무엇이 왜 변경됐는지, 기대 효과는 무엇인지를
+PR 설명 형식으로 작성해줘."</code></pre>
   </section>
 
 </LessonLayout>

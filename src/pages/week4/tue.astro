@@ -92,8 +92,25 @@ git commit -m "feat: 팀 공유 클로드 명령어 추가"</code></pre>
 1. 실패한 테스트가 있으면 원인을 분석하고 수정해줘
 2. 모두 통과하면 커버리지를 확인하고 개선이 필요한 부분을 알려줘</code></pre>
 
+    <h3>Skills — 필요할 때만 로드되는 전문 지식</h3>
+    <p>커스텀 명령어보다 한 단계 더 발전한 것이 <strong>Skills</strong>입니다. CLAUDE.md에 모든 것을 담기보다, 도메인별 지식을 분리해서 관련 작업을 할 때만 로드합니다:</p>
+    <pre><code># .claude/skills/api-design/SKILL.md
+---
+name: api-design
+description: REST API 설계 규칙과 패턴
+---
+우리 팀의 API 설계 규칙:
+- URL은 kebab-case, 복수형
+- 응답은 항상 {"{"} data, error, meta {"}"} 구조
+- 에러 코드는 도메인별로 분리 (AUTH_001, DATA_002...)
+- 모든 목록 API는 cursor 기반 페이지네이션
+
+$ARGUMENTS에 대한 API를 위 규칙에 따라 설계해줘.</code></pre>
+    <pre><code># 사용법
+/api-design 사용자 프로필 CRUD API</code></pre>
+
     <blockquote>
-      커스텀 명령어는 "내가 자주 하는 작업 + 내가 자주 쓰는 프롬프트"를 결합한 것입니다. 처음에는 간단한 것부터 시작해서 자신만의 명령어 라이브러리를 만들어보세요.
+      커스텀 명령어는 "내가 자주 하는 작업 + 내가 자주 쓰는 프롬프트"를 결합한 것입니다. Skills는 여기서 더 나아가 "도메인 지식 + 명령어"를 결합합니다. 처음에는 간단한 명령어부터 시작해서 자신만의 명령어 라이브러리를 만들어보세요.
     </blockquote>
   </section>
 
