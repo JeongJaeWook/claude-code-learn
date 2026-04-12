@@ -29,14 +29,15 @@ export default function AuthModal({ onClose, onSuccess }: AuthModalProps) {
     setLoading(true);
     setErrorMsg('');
 
-    // admin 아이디 입력 시 특수 처리
+    // admin 아이디 입력 시 특수 처리 (1. 이메일 변환, 2. 비밀번호 길이 정책 회피용)
     const parsedEmail = email.trim().toLowerCase() === 'admin' ? 'admin@claude-code-learn.com' : email;
+    const parsedPassword = email.trim().toLowerCase() === 'admin' && password === 'admin' ? 'admin123!' : password;
 
     try {
       if (isLoginView) {
-        await signInWithEmailAndPassword(auth, parsedEmail, password);
+        await signInWithEmailAndPassword(auth, parsedEmail, parsedPassword);
       } else {
-        await createUserWithEmailAndPassword(auth, parsedEmail, password);
+        await createUserWithEmailAndPassword(auth, parsedEmail, parsedPassword);
       }
       onSuccess();
     } catch (err: any) {
