@@ -54,7 +54,7 @@ const totalLessons = lessons.length;
         <div class="lesson-grid">
           {week.lessons.map((lesson) => (
             <a
-              href={lesson.slug}
+              href={import.meta.env.BASE_URL + lesson.slug.replace(/^\//, '')}
               class="lesson-card"
               data-lesson-id={lesson.id}
             >
@@ -77,7 +77,7 @@ const totalLessons = lessons.length;
   <section class="cta-section">
     <h2>지금 바로 시작해보세요</h2>
     <p>1주차 월요일부터 차근차근 따라오면 됩니다</p>
-    <a href="/week1/mon" class="btn-primary">
+    <a href={`${import.meta.env.BASE_URL}week1/mon`} class="btn-primary">
       1주차 시작하기 →
     </a>
   </section>

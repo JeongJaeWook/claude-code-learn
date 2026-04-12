@@ -12,7 +12,7 @@ const nextLesson = next ? getLessonBySlug(next) : null;
 
 <nav class="lesson-nav" aria-label="레슨 이동">
   {prevLesson ? (
-    <a href={prevLesson.slug} class="lesson-nav-btn prev">
+    <a href={import.meta.env.BASE_URL + prevLesson.slug.replace(/^\//, '')} class="lesson-nav-btn prev">
       <span class="nav-arrow">←</span>
       <span class="nav-info">
         <span class="nav-label">이전 레슨</span>
@@ -22,7 +22,7 @@ const nextLesson = next ? getLessonBySlug(next) : null;
   ) : <div></div>}
 
   {nextLesson ? (
-    <a href={nextLesson.slug} class="lesson-nav-btn next">
+    <a href={import.meta.env.BASE_URL + nextLesson.slug.replace(/^\//, '')} class="lesson-nav-btn next">
       <span class="nav-arrow">→</span>
       <span class="nav-info">
         <span class="nav-label">다음 레슨</span>

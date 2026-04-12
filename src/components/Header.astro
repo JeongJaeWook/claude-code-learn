@@ -18,13 +18,13 @@ const { showMobileMenu = false } = Astro.props;
           목차
         </button>
       )}
-      <a href="/" class="logo">
+      <a href={import.meta.env.BASE_URL} class="logo">
         <span class="logo-icon">⚡</span>
         <span class="logo-text">클로드 코드 배우기</span>
       </a>
     </div>
     <div class="header-right">
-      <a href="/" class="header-link">홈</a>
+      <a href={import.meta.env.BASE_URL} class="header-link">홈</a>
       <AuthButton client:only="react" />
       <button class="theme-toggle" id="themeToggle" aria-label="테마 전환">
         <span class="theme-icon light-icon">🌙</span>

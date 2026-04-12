@@ -29,7 +29,7 @@ const sidebarClass = isMobile ? 'sidebar-mobile' : 'sidebar';
       </div>
       {week.lessons.map((lesson) => (
         <a
-          href={lesson.slug}
+          href={import.meta.env.BASE_URL + lesson.slug.replace(/^\//, '')}
           class={`sidebar-lesson ${lesson.slug === currentSlug ? 'active' : ''}`}
           data-lesson-id={lesson.id}
         >
