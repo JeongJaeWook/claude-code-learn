@@ -113,7 +113,7 @@ html[data-theme="dark"] .hero-stats {
   font-weight: 800;
   line-height: 1;
   letter-spacing: -0.03em;
-  background: linear-gradient(135deg, var(--color-primary), #7c3aed);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -181,10 +181,10 @@ html[data-theme="dark"] .hero-stats {
   box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
-.week-num.w1 { background: linear-gradient(135deg, var(--color-week1), #818cf8); }
-.week-num.w2 { background: linear-gradient(135deg, var(--color-week2), #34d399); }
-.week-num.w3 { background: linear-gradient(135deg, var(--color-week3), #fbbf24); }
-.week-num.w4 { background: linear-gradient(135deg, var(--color-week4), #f87171); }
+.week-num.w1 { background: linear-gradient(135deg, var(--color-week1), #fda4af); }
+.week-num.w2 { background: linear-gradient(135deg, var(--color-week2), #a78bfa); }
+.week-num.w3 { background: linear-gradient(135deg, var(--color-week3), #7dd3fc); }
+.week-num.w4 { background: linear-gradient(135deg, var(--color-week4), #6ee7b7); }
 
 .week-title {
   font-size: 1.05rem;
@@ -239,10 +239,10 @@ html[data-theme="dark"] .lesson-card {
   height: 4px;
 }
 
-.week-1 .lesson-card::before { background: linear-gradient(90deg, var(--color-week1), #818cf8); }
-.week-2 .lesson-card::before { background: linear-gradient(90deg, var(--color-week2), #34d399); }
-.week-3 .lesson-card::before { background: linear-gradient(90deg, var(--color-week3), #fbbf24); }
-.week-4 .lesson-card::before { background: linear-gradient(90deg, var(--color-week4), #f87171); }
+.week-1 .lesson-card::before { background: linear-gradient(90deg, var(--color-week1), #fda4af); }
+.week-2 .lesson-card::before { background: linear-gradient(90deg, var(--color-week2), #a78bfa); }
+.week-3 .lesson-card::before { background: linear-gradient(90deg, var(--color-week3), #7dd3fc); }
+.week-4 .lesson-card::before { background: linear-gradient(90deg, var(--color-week4), #6ee7b7); }
 
 .lesson-card:hover {
   transform: translateY(-5px) scale(1.02);
@@ -252,12 +252,12 @@ html[data-theme="dark"] .lesson-card {
 }
 
 .lesson-card.completed {
-  border-color: rgba(0, 210, 159, 0.4);
+  border-color: rgba(59, 130, 246, 0.4);
   background: var(--color-accent-light);
 }
 
 html[data-theme="dark"] .lesson-card.completed {
-  background: rgba(0, 210, 159, 0.08);
+  background: rgba(59, 130, 246, 0.08);
 }
 
 .lesson-card.completed::after {
