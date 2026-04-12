@@ -1,0 +1,108 @@
+---
+import HomeLayout from '../layouts/HomeLayout.astro';
+import { weeks, lessons } from '../data/curriculum';
+import '../styles/home.css';
+const totalLessons = lessons.length;
+---
+
+<HomeLayout>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-badge">4주 완성 커리큘럼</div>
+    <h1>클로드 코드,<br />하루 하나씩 배워보세요</h1>
+    <p class="hero-sub">
+      설치부터 멀티에이전트까지 — 실습 중심으로 한 단계씩 익히는<br />
+      클로드 코드 4주 완성 가이드
+    </p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="hero-stat-num">4주</span>
+        <span class="hero-stat-label">커리큘럼</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-num">{totalLessons}개</span>
+        <span class="hero-stat-label">레슨</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-num">실습</span>
+        <span class="hero-stat-label">중심</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 진행률 배너 -->
+  <div class="progress-banner">
+    <span class="progress-banner-label">내 진행률</span>
+    <div class="progress-track">
+      <div class="progress-fill" id="homeProgressFill" style="width:0%"></div>
+    </div>
+    <span class="progress-pct" id="homeProgressPct" data-total={totalLessons}>0 / {totalLessons} 완료</span>
+  </div>
+
+  <!-- 커리큘럼 그리드 -->
+  <section class="curriculum-section">
+    <h2>전체 커리큘럼</h2>
+    <p class="section-sub">원하는 레슨을 클릭해서 바로 시작하세요</p>
+
+    {weeks.map((week) => (
+      <div class={`week-block week-${week.number}`}>
+        <div class="week-header">
+          <span class={`week-num w${week.number}`}>{week.number}</span>
+          <span class="week-title">{week.title}</span>
+        </div>
+        <div class="lesson-grid">
+          {week.lessons.map((lesson) => (
+            <a
+              href={lesson.slug}
+              class="lesson-card"
+              data-lesson-id={lesson.id}
+            >
+              <span class="card-day">{lesson.dayLabel}</span>
+              <span class="card-title">{lesson.title}</span>
+              {lesson.subsections.length > 0 && (
+                <span class="card-count">{lesson.subsections.length}개 소단원</span>
+              )}
+              {lesson.day === 'weekend' && (
+                <span class="card-count">읽을거리</span>
+              )}
+            </a>
+          ))}
+        </div>
+      </div>
+    ))}
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <h2>지금 바로 시작해보세요</h2>
+    <p>1주차 월요일부터 차근차근 따라오면 됩니다</p>
+    <a href="/week1/mon" class="btn-primary">
+      1주차 시작하기 →
+    </a>
+  </section>
+</HomeLayout>
+
+<script>
+  function updateHomeProgress() {
+    let progress: Record<string, boolean> = {};
+    try { progress = JSON.parse(localStorage.getItem('progress') || '{}'); } catch(e) {}
+    const completed = Object.values(progress).filter(Boolean).length;
+    const pctEl = document.getElementById('homeProgressPct') as HTMLElement | null;
+    const total = pctEl ? Number(pctEl.dataset.total) : 24;
+    const pct = Math.round((completed / total) * 100);
+
+    const fill = document.getElementById('homeProgressFill') as HTMLElement | null;
+    if (fill) fill.style.width = pct + '%';
+    if (pctEl) pctEl.textContent = `${completed} / ${total} 완료`;
+
+    // 완료된 카드 표시
+    document.querySelectorAll('[data-lesson-id]').forEach(el => {
+      const id = (el as HTMLElement).dataset.lessonId!;
+      el.classList.toggle('completed', !!progress[id]);
+    });
+  }
+
+  updateHomeProgress();
+  window.addEventListener('storage', updateHomeProgress);
+</script>

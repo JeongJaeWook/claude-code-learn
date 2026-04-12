@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:wikidocs.net)",
+      "WebSearch",
+      "Bash(npx astro:*)"
+    ]
+  }
+}

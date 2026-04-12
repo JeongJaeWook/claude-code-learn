@@ -1,0 +1,250 @@
+---
+import LessonLayout from '../../layouts/LessonLayout.astro';
+import { getLessonBySlug } from '../../data/curriculum';
+const lesson = getLessonBySlug('/week2/fri')!;
+---
+<LessonLayout lesson={lesson}>
+
+  <section id="context-eng">
+    <h2>1. 프롬프트 엔지니어링에서 컨텍스트 엔지니어링으로</h2>
+    <p>
+      AI를 잘 쓰는 방법은 "좋은 프롬프트 쓰기"에서 "AI에게 좋은 컨텍스트 환경을 만들어주기"로 진화하고 있습니다. MCP는 이 흐름의 핵심 기술입니다.
+    </p>
+    <p>
+      클로드 코드가 아무리 똑똑해도 여러분의 데이터베이스 안에 무엇이 있는지, GitHub 이슈가 뭐가 열려있는지는 알 수 없습니다. MCP는 클로드 코드가 이런 외부 데이터와 도구에 접근할 수 있는 표준화된 방법입니다.
+    </p>
+  </section>
+
+  <section id="mcp">
+    <h2>2. MCP 이해하기</h2>
+    <p>
+      MCP(Model Context Protocol)는 Anthropic이 만든 오픈 표준입니다. AI 모델이 외부 시스템(데이터베이스, API, 파일 시스템 등)과 통신하는 방법을 정의합니다.
+    </p>
+
+    <h3>MCP의 구성 요소</h3>
+    <ul>
+      <li><strong>MCP 서버</strong>: 특정 서비스를 AI에게 제공하는 프로그램 (예: PostgreSQL MCP 서버, GitHub MCP 서버)</li>
+      <li><strong>MCP 클라이언트</strong>: MCP 서버를 사용하는 AI 도구 (클로드 코드가 클라이언트)</li>
+      <li><strong>프로토콜</strong>: 서버-클라이언트 간 통신 규칙</li>
+    </ul>
+
+    <h3>MCP가 제공하는 것</h3>
+    <ul>
+      <li><strong>Resources</strong>: AI가 읽을 수 있는 데이터 (DB 테이블, 파일, API 응답)</li>
+      <li><strong>Tools</strong>: AI가 실행할 수 있는 액션 (SQL 실행, API 호출, 파일 쓰기)</li>
+      <li><strong>Prompts</strong>: 미리 정의된 프롬프트 템플릿</li>
+    </ul>
+  </section>
+
+  <section id="compare">
+    <h2>3. MCP vs 프롬프트 엔지니어링 비교</h2>
+
+    <h3>MCP 없이 데이터베이스 질문하기</h3>
+    <pre><code># 사용자가 직접 데이터를 가져와서 붙여넣어야 함
+&gt; 우리 DB에서 이번 달 신규 가입자 수를 알고 싶어.
+  SELECT COUNT(*) FROM users WHERE created_at >= '2025-01-01'
+  실행하면 결과가 1,234명이야. 이게 전월 대비 어떤지 분석해줘</code></pre>
+
+    <h3>MCP로 데이터베이스 질문하기</h3>
+    <pre><code># 클로드 코드가 직접 DB에 접근
+&gt; 이번 달 신규 가입자 수를 전월과 비교해서 분석해줘</code></pre>
+    <p>클로드 코드가 직접 SQL을 작성하고 실행해서 결과를 가져옵니다. 훨씬 자연스럽고 효율적입니다.</p>
+  </section>
+
+  <section id="connect">
+    <h2>4. MCP 연결 방식 이해하기</h2>
+    <p>MCP 서버는 두 가지 방식으로 연결합니다:</p>
+
+    <h3>stdio 방식 (로컬)</h3>
+    <p>MCP 서버를 로컬에서 프로세스로 실행하고, 표준 입출력으로 통신합니다. 가장 일반적인 방식입니다.</p>
+
+    <h3>SSE/Streamable HTTP 방식 (원격)</h3>
+    <p>원격 서버에 HTTP로 연결합니다. 팀 전체가 공유하는 MCP 서버에 적합합니다. OAuth 인증을 지원하는 서버도 있습니다.</p>
+
+    <h3>설정 파일 위치와 적용 범위</h3>
+    <ul>
+      <li><strong>전역 설정</strong>: <code>~/.claude/settings.json</code>의 <code>mcpServers</code> — 모든 프로젝트에 적용</li>
+      <li><strong>프로젝트 설정</strong>: <code>.claude/settings.json</code>의 <code>mcpServers</code> — 해당 프로젝트에만 적용, 팀 공유 가능</li>
+      <li><strong>프로젝트 로컬</strong>: <code>.claude/settings.local.json</code> — 개인용, git에 커밋하지 않음</li>
+    </ul>
+
+    <h3>claude mcp add — 가장 쉬운 설정 방법</h3>
+    <p>설정 파일을 직접 편집하지 않아도, CLI 명령어로 MCP 서버를 추가할 수 있습니다:</p>
+    <pre><code># 프로젝트 범위로 추가 (기본값)
+claude mcp add postgres -- npx -y @modelcontextprotocol/server-postgres postgresql://localhost/mydb
+
+# 전역 범위로 추가
+claude mcp add --scope user github -- npx -y @modelcontextprotocol/server-github
+
+# 환경 변수 포함
+claude mcp add --env GITHUB_TOKEN=ghp_xxx github -- npx -y @modelcontextprotocol/server-github
+
+# 현재 설정된 MCP 서버 목록 확인
+claude mcp list
+
+# MCP 서버 제거
+claude mcp remove postgres</code></pre>
+
+    <h3>MCP 도구의 권한 관리</h3>
+    <p>MCP 서버가 제공하는 도구도 클로드 코드의 권한 시스템 아래에서 관리됩니다:</p>
+    <pre><code># MCP 도구는 mcp__서버명__도구명 형태로 호출됨
+# 예: mcp__postgres__query, mcp__github__create_issue
+
+# settings.json에서 자동 승인 설정
+{"{"}
+  "permissions": {"{"}
+    "allow": [
+      "mcp__postgres__query",
+      "mcp__github__list_issues"
+    ],
+    "deny": [
+      "mcp__postgres__execute"
+    ]
+  {"}"}
+{"}"}</code></pre>
+  </section>
+
+  <section id="postgres">
+    <h2>5. 실습: PostgreSQL 데이터베이스와 MCP 연동해 보기</h2>
+
+    <h3>MCP 서버 설치</h3>
+    <pre><code>npm install -g @modelcontextprotocol/server-postgres</code></pre>
+
+    <h3>설정 파일 작성</h3>
+    <pre><code>// ~/.claude/claude_desktop_config.json
+{"{"}
+  "mcpServers": {"{"}
+    "postgres": {"{"}
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-postgres",
+        "postgresql://username:password@localhost:5432/mydb"
+      ]
+    {"}"}
+  {"}"}
+{"}"}</code></pre>
+
+    <h3>클로드 코드 재시작 후 확인</h3>
+    <pre><code>&gt; /mcp
+  (postgres 서버가 connected 상태로 표시되어야 함)</code></pre>
+
+    <h3>이제 자연어로 DB 조회</h3>
+    <pre><code>&gt; users 테이블의 스키마를 보여줘
+&gt; 지난 30일간 가입한 사용자 수를 날짜별로 알려줘
+&gt; 가장 많이 주문한 상위 10명의 고객 정보를 보여줘</code></pre>
+  </section>
+
+  <section id="github">
+    <h2>6. 실습: 깃허브 API 연동</h2>
+
+    <h3>GitHub Personal Access Token 발급</h3>
+    <p>GitHub → Settings → Developer settings → Personal access tokens → Fine-grained tokens에서 토큰을 발급합니다. 필요한 권한: repo, issues, pull_requests</p>
+
+    <h3>설정 파일에 추가</h3>
+    <pre><code>{"{"}
+  "mcpServers": {"{"}
+    "github": {"{"}
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {"{"}
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "ghp_여기에토큰입력"
+      {"}"}
+    {"}"}
+  {"}"}
+{"}"}</code></pre>
+
+    <h3>활용 예시</h3>
+    <pre><code>&gt; 우리 저장소의 열려있는 이슈 중 버그 라벨이 달린 것들을 보여줘
+&gt; 이번 주 머지된 PR 목록과 각 PR의 변경 사항을 요약해줘
+&gt; 이슈 #42를 읽고 해결 방법을 코드로 작성해줘</code></pre>
+  </section>
+
+  <section id="advanced">
+    <h2>7. 고급 활용 패턴</h2>
+
+    <h3>여러 MCP 서버 동시 연결</h3>
+    <pre><code>{"{"}
+  "mcpServers": {"{"}
+    "postgres": {"{"} ... {"}"},
+    "github": {"{"} ... {"}"},
+    "slack": {"{"} ... {"}"}
+  {"}"}
+{"}"}</code></pre>
+    <pre><code>&gt; GitHub 이슈 #15에 언급된 버그를 재현하는 쿼리를 PostgreSQL에서 실행하고,
+  결과를 Slack #dev-alerts 채널에 공유해줘</code></pre>
+
+    <h3>프로젝트별 MCP 설정</h3>
+    <pre><code>// .claude/settings.json (프로젝트 루트)
+{"{"}
+  "mcpServers": {"{"}
+    "project-db": {"{"}
+      "command": "npx",
+      "args": ["@modelcontextprotocol/server-postgres", "$DATABASE_URL"]
+    {"}"}
+  {"}"}
+{"}"}</code></pre>
+    <p>이 파일을 git에 커밋하면 팀원들도 동일한 MCP 설정을 사용할 수 있습니다.</p>
+  </section>
+
+  <section id="examples">
+    <h2>8. 실전 활용 예시</h2>
+
+    <h3>데이터 분석 자동화</h3>
+    <pre><code>&gt; 지난 분기 매출 데이터를 분석해서 이상 징후를 찾아줘.
+  차트 대신 데이터 테이블로 보여주고, 원인을 추측해줘.</code></pre>
+
+    <h3>코드 리뷰 + 이슈 연동</h3>
+    <pre><code>&gt; 오늘 열린 PR들을 모두 코드 리뷰하고, 각 PR에 리뷰 코멘트를 달아줘</code></pre>
+
+    <h3>운영 모니터링</h3>
+    <pre><code>&gt; 오늘 발생한 500 에러를 로그 DB에서 조회하고,
+  패턴을 분석해서 Slack에 요약 리포트를 보내줘</code></pre>
+  </section>
+
+  <section id="config">
+    <h2>9. MCP 서버 구성하기</h2>
+
+    <h3>주요 공식 MCP 서버 목록</h3>
+    <ul>
+      <li><code>@modelcontextprotocol/server-postgres</code> — PostgreSQL</li>
+      <li><code>@modelcontextprotocol/server-github</code> — GitHub API</li>
+      <li><code>@modelcontextprotocol/server-slack</code> — Slack</li>
+      <li><code>@modelcontextprotocol/server-filesystem</code> — 파일 시스템 확장</li>
+      <li><code>@modelcontextprotocol/server-brave-search</code> — Brave 검색</li>
+      <li><code>@modelcontextprotocol/server-puppeteer</code> — 브라우저 자동화</li>
+      <li><code>@upstash/context7-mcp</code> — 최신 라이브러리 문서 실시간 참조</li>
+    </ul>
+
+    <h3>MCP 서버 찾기</h3>
+    <p><a href="https://github.com/modelcontextprotocol/servers" target="_blank" rel="noopener">github.com/modelcontextprotocol/servers</a>에서 공식 서버 목록을 확인할 수 있습니다. 커뮤니티가 만든 서버들도 점점 늘어나고 있습니다.</p>
+  </section>
+
+  <section id="troubleshoot">
+    <h2>10. MCP 문제 해결</h2>
+
+    <h3>MCP 서버 상태 확인</h3>
+    <pre><code>&gt; /mcp
+# 각 서버의 연결 상태(connected/error)와 제공하는 도구 목록을 확인</code></pre>
+
+    <h3>서버가 연결되지 않을 때</h3>
+    <ul>
+      <li>명령어 경로가 올바른지 확인 (<code>npx</code>, <code>node</code>, <code>python</code> 등이 PATH에 있는지)</li>
+      <li>환경 변수가 올바르게 설정되었는지 확인 (API 키, DB URL 등)</li>
+      <li>MCP 서버 패키지가 설치되었는지 확인</li>
+      <li>클로드 코드를 재시작해서 서버를 다시 연결</li>
+    </ul>
+
+    <h3>보안 주의사항</h3>
+    <ul>
+      <li>MCP 서버에 전달하는 DB URL이나 API 키가 settings.json에 직접 들어가면 git에 커밋될 수 있습니다. <code>settings.local.json</code>을 사용하거나 환경 변수로 분리하세요.</li>
+      <li>MCP 서버가 제공하는 도구 중 쓰기 작업(INSERT, DELETE 등)은 <code>permissions.deny</code>로 차단하거나 실행 전 확인하세요.</li>
+      <li>프로덕션 DB가 아닌 개발용 DB에만 연결하는 것을 권장합니다.</li>
+    </ul>
+
+    <blockquote>
+      MCP는 빠르게 생태계가 성장하고 있습니다. 4주차에서는 MCP를 더 깊게 활용하는 전략과, 직접 MCP 서버를 만드는 방법도 배웁니다.
+    </blockquote>
+  </section>
+
+</LessonLayout>

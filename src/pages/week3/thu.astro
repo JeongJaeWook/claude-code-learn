@@ -1,0 +1,139 @@
+---
+import LessonLayout from '../../layouts/LessonLayout.astro';
+import { getLessonBySlug } from '../../data/curriculum';
+const lesson = getLessonBySlug('/week3/thu')!;
+---
+<LessonLayout lesson={lesson}>
+
+  <section id="review">
+    <h2>1. 코드 리뷰 자동화</h2>
+    <p>PR을 올리기 전 클로드 코드로 사전 리뷰를 받으면 팀 리뷰 부담을 줄이고 품질을 높일 수 있습니다.</p>
+
+    <h3>/review 명령어 활용</h3>
+    <pre><code># 변경 사항 스테이징 후
+git add .
+/review</code></pre>
+
+    <h3>특정 관점으로 리뷰 요청</h3>
+    <pre><code>&gt; @src/api/recipes.py 를 다음 관점에서 리뷰해줘:
+  1. 보안: SQL 인젝션, XSS, 인증 우회 가능성
+  2. 성능: N+1 쿼리, 불필요한 DB 호출
+  3. 에러 처리: 예외 상황이 모두 처리되고 있는지
+  4. 가독성: 함수 길이, 변수명, 주석
+  심각도(Critical/Major/Minor)로 분류해줘.</code></pre>
+
+    <h3>자동 리뷰 봇 설정</h3>
+    <pre><code>&gt; GitHub Actions에서 PR이 생성될 때 자동으로 코드 리뷰를 실행하고
+  결과를 PR 코멘트로 달아주는 워크플로를 만들어줘.
+  claude -p 명령어를 활용해줘.</code></pre>
+  </section>
+
+  <section id="refactor">
+    <h2>2. 리팩토링 전략</h2>
+    <p>좋은 코드는 한 번에 완벽하게 작성되지 않습니다. 지속적인 리팩토링이 필요합니다.</p>
+
+    <h3>코드 스멜 감지</h3>
+    <pre><code>&gt; @app/services/ 폴더의 코드에서 다음 코드 스멜을 찾아줘:
+  - 너무 긴 함수 (20줄 이상)
+  - 중복 코드
+  - 깊은 중첩 (if 3단계 이상)
+  - 매직 넘버/문자열
+  각각 어떻게 리팩토링할지 제안해줘.</code></pre>
+
+    <h3>안전한 리팩토링 순서</h3>
+    <pre><code>&gt; create_recipe 함수가 너무 길어서 분리하고 싶어.
+  테스트를 깨뜨리지 않으면서 안전하게 리팩토링하는 순서를 알려줘.
+  각 단계마다 테스트를 실행할 수 있게 작은 단위로 나눠줘.</code></pre>
+
+    <h3>리팩토링 자동 실행</h3>
+    <pre><code>&gt; validate_recipe_data 함수의 로직이 3곳에 중복되어 있어.
+  공통 유틸 함수로 추출하고 기존 3곳을 모두 업데이트해줘.
+  테스트도 같이 업데이트해줘.</code></pre>
+  </section>
+
+  <section id="perf">
+    <h2>3. 성능 최적화</h2>
+
+    <h3>성능 병목 찾기</h3>
+    <pre><code># Python 프로파일링
+python -m cProfile -o profile.stats app/main.py
+python -c "import pstats; p = pstats.Stats('profile.stats'); p.sort_stats('cumulative'); p.print_stats(20)" > profile_report.txt
+
+&gt; profile_report.txt 파일을 읽고 가장 느린 함수들을 분석해줘.
+  각 함수의 최적화 방법을 알려줘.</code></pre>
+
+    <h3>데이터베이스 쿼리 최적화</h3>
+    <pre><code>&gt; @app/services/recipe_service.py 의 get_recipes_with_likes 함수가 느려.
+  실행 계획을 보니 N+1 쿼리가 발생하고 있어.
+  SQLAlchemy로 최적화해줘. joinedload 또는 selectinload를 활용해줘.</code></pre>
+
+    <h3>캐싱 전략</h3>
+    <pre><code>&gt; 레시피 목록 API가 매번 DB를 조회해. Redis로 캐싱을 적용해줘.
+  캐시 무효화 전략도 함께 구현해줘.
+  (새 레시피 등록 시, 레시피 수정 시 캐시 삭제)</code></pre>
+  </section>
+
+  <section id="metrics">
+    <h2>4. 코드 품질 메트릭</h2>
+
+    <h3>정적 분석 도구 설정</h3>
+    <pre><code>&gt; 코드 품질을 지속적으로 측정하는 도구들을 설정해줘:
+  - ruff: 린터
+  - mypy: 타입 체커
+  - bandit: 보안 취약점 스캐너
+  - radon: 복잡도 측정
+  각 도구의 설정 파일(pyproject.toml)도 작성해줘.</code></pre>
+
+    <h3>복잡도 분석</h3>
+    <pre><code>&gt; radon으로 측정한 결과 recipe_service.py의 복잡도가 높아.
+  복잡도가 10 이상인 함수들을 단순화해줘.</code></pre>
+  </section>
+
+  <section id="debt">
+    <h2>5. 기술 부채 관리</h2>
+    <p>기술 부채는 빠른 개발을 위해 임시방편으로 작성한 코드가 쌓인 것입니다. 방치하면 나중에 더 큰 비용이 듭니다.</p>
+
+    <h3>기술 부채 인벤토리</h3>
+    <pre><code>&gt; 코드베이스 전체에서 TODO, FIXME, HACK, XXX 주석을 찾아줘.
+  각 항목을 카테고리별로 분류하고, 처리 우선순위를 제안해줘.
+  GitHub 이슈로 만들 수 있게 마크다운 형식으로 정리해줘.</code></pre>
+
+    <h3>기술 부채 해결</h3>
+    <pre><code>&gt; TODO: 이 부분 나중에 인덱스 추가할 것 이라고 되어있는 부분들을 찾아서
+  실제로 PostgreSQL 마이그레이션 파일을 만들어줘.</code></pre>
+  </section>
+
+  <section id="legacy">
+    <h2>6. 레거시 코드 개선</h2>
+
+    <h3>레거시 코드 이해하기</h3>
+    <pre><code>&gt; 이 5년 된 코드를 이해하기 어려워.
+  @legacy/data_processor.py
+  이 파일이 하는 일을 단계별로 설명해줘.
+  왜 이렇게 복잡한지 이유도 추측해봐.</code></pre>
+
+    <h3>점진적 현대화</h3>
+    <pre><code>&gt; 이 레거시 Python 2 스타일 코드를 Python 3 스타일로 변환해줘.
+  한 번에 전체를 바꾸지 말고, 테스트 가능한 단계로 나눠서 진행해줘.
+  각 단계마다 테스트를 통과하는지 확인해가면서 진행해줘.</code></pre>
+
+    <h3>Strangler Fig 패턴</h3>
+    <pre><code>&gt; 레거시 모놀리스에서 레시피 검색 기능을 새 마이크로서비스로 분리하고 싶어.
+  Strangler Fig 패턴으로 점진적으로 마이그레이션하는 계획을 세워줘.
+  기존 시스템을 중단하지 않고 전환할 수 있게.</code></pre>
+  </section>
+
+  <section id="checklist">
+    <h2>7. 체크 리스트</h2>
+    <p>코드 개선 작업을 시작하기 전 확인할 사항들:</p>
+    <ul>
+      <li>☐ 현재 테스트 스위트가 통과하는 상태인지 확인</li>
+      <li>☐ 성능 기준선(baseline) 측정 완료</li>
+      <li>☐ 변경 범위와 위험도 파악</li>
+      <li>☐ 롤백 계획 수립</li>
+      <li>☐ 스테이징 환경에서 먼저 테스트</li>
+      <li>☐ 팀원 코드 리뷰 완료</li>
+    </ul>
+  </section>
+
+</LessonLayout>

@@ -1,0 +1,17 @@
+{
+  "name": "claude-code-learn",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/react": "^5.0.0",
+    "@supabase/supabase-js": "^2.103.0",
+    "astro": "^4.16.18",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5"
+  }
+}

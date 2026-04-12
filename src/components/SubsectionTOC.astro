@@ -1,0 +1,44 @@
+---
+import type { Subsection } from '../data/curriculum';
+
+export interface Props {
+  subsections: Subsection[];
+}
+const { subsections } = Astro.props;
+---
+
+{subsections.length > 0 && (
+  <aside class="toc-aside" aria-label="이 페이지 목차">
+    <p class="toc-label">이 페이지</p>
+    {subsections.map((s) => (
+      <a href={`#${s.id}`} class="toc-link" data-toc={s.id}>
+        {s.title}
+      </a>
+    ))}
+  </aside>
+)}
+
+<script>
+  // 스크롤 위치에 따라 활성 TOC 항목 표시
+  const links = document.querySelectorAll('[data-toc]');
+  if (links.length > 0) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            links.forEach(l => l.classList.remove('active'));
+            const active = document.querySelector(`[data-toc="${entry.target.id}"]`);
+            active?.classList.add('active');
+          }
+        });
+      },
+      { rootMargin: '-20% 0px -70% 0px' }
+    );
+
+    links.forEach(link => {
+      const id = (link as HTMLElement).dataset.toc!;
+      const target = document.getElementById(id);
+      if (target) observer.observe(target);
+    });
+  }
+</script>

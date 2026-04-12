@@ -1,0 +1,179 @@
+---
+import LessonLayout from '../../layouts/LessonLayout.astro';
+import { getLessonBySlug } from '../../data/curriculum';
+const lesson = getLessonBySlug('/week3/mon')!;
+---
+<LessonLayout lesson={lesson}>
+
+  <section id="arch">
+    <h2>1. 프로젝트 아키텍처 설계</h2>
+    <p>클로드 코드는 단순한 코드 작성 보조를 넘어, 프로젝트의 설계 단계부터 함께할 수 있습니다. 요구사항을 설명하면 적합한 아키텍처를 제안하고, 트레이드오프를 분석해줍니다.</p>
+
+    <h3>요구사항으로 아키텍처 도출하기</h3>
+    <pre><code>&gt; 다음 요구사항으로 서비스를 만들려고 해:
+  - 레시피 공유 커뮤니티
+  - 사용자 10만 명 규모 예상
+  - 이미지 업로드 지원
+  - 검색 기능 필요
+  - 모바일 앱도 계획 중
+
+  적합한 아키텍처를 추천해줘.
+  모놀리식 vs 마이크로서비스, 기술 스택 선택 이유도 설명해줘.</code></pre>
+
+    <h3>Plan 모드로 설계하기</h3>
+    <p>복잡한 설계 작업에서는 Plan 모드(<code>Shift+Tab</code>)를 활용하면 클로드 코드가 코드 수정 없이 분석과 계획에만 집중합니다:</p>
+    <pre><code># Plan 모드 진입 후
+&gt; 현재 모놀리식 구조에서 결제 서비스를 분리하려면
+  어떤 영향 범위가 있는지 분석해줘.
+  코드는 수정하지 말고 계획만 세워줘.</code></pre>
+
+    <h3>아키텍처 결정 기록 (ADR)</h3>
+    <pre><code>&gt; 우리가 방금 결정한 아키텍처를 ADR(Architecture Decision Record) 형식으로 문서화해줘.
+  결정한 것, 이유, 대안들, 결과를 포함해줘.</code></pre>
+
+    <h3>인터뷰 기법으로 요구사항 구체화</h3>
+    <p>처음부터 완벽한 요구사항을 제시하기 어렵다면, 클로드에게 인터뷰를 요청하세요:</p>
+    <pre><code>&gt; 레시피 공유 서비스를 만들고 싶어. 설계 전에 먼저 인터뷰해줘.
+  기술적 제약, 확장성, 보안, 사용자 경험 관점에서
+  내가 놓쳤을 수 있는 중요한 질문들을 해줘.
+  인터뷰가 끝나면 결과를 SPEC.md로 정리해줘.</code></pre>
+  </section>
+
+  <section id="structure">
+    <h2>2. 프로젝트 구조 설계</h2>
+    <p>아키텍처가 결정되면 실제 폴더 구조와 파일 조직 방식을 설계합니다.</p>
+
+    <h3>기술 스택별 최적 구조 요청</h3>
+    <pre><code>&gt; FastAPI + PostgreSQL + React 스택으로 레시피 공유 서비스를 만들 거야.
+  모범 사례에 따른 폴더 구조를 만들어줘.
+  각 폴더의 역할도 설명해줘.</code></pre>
+
+    <p>클로드 코드가 제안하는 구조 예시:</p>
+    <pre><code>recipe-app/
+├── backend/
+│   ├── app/
+│   │   ├── api/          # 라우터
+│   │   ├── core/         # 설정, 보안
+│   │   ├── models/       # DB 모델
+│   │   ├── schemas/      # Pydantic 스키마
+│   │   ├── services/     # 비즈니스 로직
+│   │   └── utils/        # 유틸리티
+│   ├── tests/
+│   └── main.py
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── hooks/
+│   │   └── api/
+│   └── package.json
+└── docker-compose.yml</code></pre>
+
+    <h3>실제 폴더 생성</h3>
+    <pre><code>&gt; 위 구조대로 폴더와 기본 파일들을 실제로 생성해줘</code></pre>
+  </section>
+
+  <section id="wbs">
+    <h2>3. WBS 작성</h2>
+    <p>WBS(Work Breakdown Structure)는 프로젝트를 작은 작업 단위로 분해한 목록입니다. 클로드 코드가 기술적 관점에서 빠뜨리기 쉬운 작업들까지 포함한 WBS를 만들어줍니다.</p>
+
+    <pre><code>&gt; 레시피 공유 서비스의 MVP를 3개월 안에 출시하는 WBS를 작성해줘.
+  백엔드, 프론트엔드, 인프라, 테스트로 나눠줘.
+  각 태스크에 예상 소요 시간도 추가해줘.
+  마크다운 체크리스트 형식으로 만들어줘.</code></pre>
+
+    <h3>스프린트 계획으로 변환</h3>
+    <pre><code>&gt; WBS를 2주 스프린트 3개로 나눠줘.
+  각 스프린트의 목표와 완료 기준도 정의해줘.</code></pre>
+  </section>
+
+  <section id="risk">
+    <h2>4. 리스크 분석과 대응 계획</h2>
+    <p>프로젝트에서 발생할 수 있는 리스크를 미리 파악하고 대응 계획을 세웁니다.</p>
+
+    <pre><code>&gt; 레시피 공유 서비스 프로젝트의 주요 기술적 리스크를 분석해줘.
+  각 리스크마다:
+  - 발생 가능성 (높음/중간/낮음)
+  - 영향도 (높음/중간/낮음)
+  - 사전 예방 방법
+  - 발생 시 대응 방법
+  을 표로 정리해줘.</code></pre>
+
+    <h3>기술 부채 관리</h3>
+    <pre><code>&gt; MVP에서 의도적으로 빠르게 만들고 나중에 개선할 부분과,
+  처음부터 제대로 만들어야 하는 부분을 구분해줘.</code></pre>
+  </section>
+
+  <section id="docs">
+    <h2>5. 프로젝트 문서 템플릿 생성</h2>
+    <p>프로젝트 시작 시 필요한 문서들을 한 번에 만들 수 있습니다.</p>
+
+    <pre><code>&gt; 레시피 공유 서비스 프로젝트에 필요한 문서들을 생성해줘:
+  1. README.md (프로젝트 소개, 설치 방법, 사용법)
+  2. CONTRIBUTING.md (기여 가이드)
+  3. CLAUDE.md (클로드 코드 작업 규칙)
+  4. .github/PULL_REQUEST_TEMPLATE.md
+  5. docs/API.md (API 문서 초안)</code></pre>
+  </section>
+
+  <section id="recipe">
+    <h2>6. 레시피 공유 서비스 설계</h2>
+    <p>오늘 배운 내용을 통합해서 실제로 레시피 공유 서비스의 기초를 설계해봅시다.</p>
+
+    <h3>도메인 모델 설계</h3>
+    <pre><code>&gt; 레시피 공유 서비스의 핵심 도메인 모델을 설계해줘.
+  - 엔티티, 속성, 관계를 정의해줘
+  - ERD를 Mermaid 다이어그램으로 그려줘
+  - 각 관계의 카디널리티를 설명해줘</code></pre>
+
+    <h3>API 설계</h3>
+    <pre><code>&gt; RESTful API 엔드포인트를 설계해줘.
+  OpenAPI(Swagger) 스펙 형식으로 주요 엔드포인트를 작성해줘.</code></pre>
+  </section>
+
+  <section id="multi-perspective">
+    <h2>7. 다양한 관점으로 설계 검증하기</h2>
+
+    <h3>서브에이전트로 병렬 분석</h3>
+    <p>설계를 여러 관점에서 동시에 검토하면 놓치는 부분을 줄일 수 있습니다:</p>
+    <pre><code>&gt; 서브에이전트를 사용해서 우리 설계를 세 가지 관점에서 동시에 분석해줘:
+  1. 보안 관점: 인증, 권한, 데이터 보호
+  2. 성능 관점: 병목 지점, 확장성
+  3. 운영 관점: 모니터링, 장애 대응, 배포 용이성</code></pre>
+
+    <h3>Writer/Reviewer 패턴</h3>
+    <p>한 세션에서 설계하고, 별도 세션에서 리뷰하면 편향 없는 검토가 가능합니다:</p>
+    <pre><code># 세션 A (Writer) — 설계
+&gt; 레시피 공유 서비스의 아키텍처를 설계해줘
+
+# 세션 B (Reviewer) — 별도 터미널에서 claude 실행
+&gt; @docs/architecture.md 이 아키텍처 설계를 시니어 아키텍트로서 리뷰해줘.
+  확장성, 보안, 운영 관점에서 약점을 찾아줘.</code></pre>
+  </section>
+
+  <section id="troubleshoot">
+    <h2>8. 문제 해결</h2>
+
+    <h3>설계 의견 충돌</h3>
+    <pre><code>&gt; A 방법과 B 방법 중 어느 게 더 나은지 판단이 안 서.
+  [A 방법 설명] vs [B 방법 설명]
+  우리 상황에서의 트레이드오프를 분석해줘.
+  표로 비교하고 최종 추천을 해줘.</code></pre>
+
+    <h3>요구사항이 바뀌었을 때</h3>
+    <pre><code>&gt; 처음에 모놀리식으로 설계했는데, 팀에서 마이크로서비스로 바꾸자고 해.
+  현재 설계에서 마이크로서비스로 전환하려면 뭘 바꿔야 해?
+  단계적 마이그레이션 계획을 세워줘.</code></pre>
+
+    <h3>설계 문서를 코드에 반영하기</h3>
+    <pre><code># 설계가 확정된 후
+&gt; /clear
+&gt; @docs/SPEC.md 이 스펙을 기반으로 구현을 시작해줘.
+  스펙에 정의된 순서대로 진행하고,
+  각 단계가 끝날 때마다 커밋해줘.</code></pre>
+    <blockquote>
+      설계 세션과 구현 세션을 분리하면 각 단계에서 컨텍스트를 최대한 효율적으로 사용할 수 있습니다. 설계 결과를 파일로 저장하고, 새 세션에서 해당 파일을 참조하는 패턴을 권장합니다.
+    </blockquote>
+  </section>
+
+</LessonLayout>
