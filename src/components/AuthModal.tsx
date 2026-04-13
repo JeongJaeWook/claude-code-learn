@@ -1,12 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { auth } from '../lib/firebase';
-import { 
-  signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword, 
-  GoogleAuthProvider, 
-  signInWithPopup 
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup
 } from 'firebase/auth';
 
 interface AuthModalProps {
@@ -63,21 +64,21 @@ export default function AuthModal({ onClose, onSuccess }: AuthModalProps) {
     }
   };
 
-  return (
+  const modal = (
     <div className="auth-modal-overlay" onClick={onClose}>
       <div className="auth-modal" onClick={e => e.stopPropagation()}>
         <button className="auth-modal-close" onClick={onClose} aria-label="닫기">×</button>
-        
+
         <h2>{isLoginView ? '로그인' : '회원가입'}</h2>
-        
+
         <div className="auth-modal-tabs">
-          <button 
+          <button
             className={`auth-modal-tab ${isLoginView ? 'active' : ''}`}
             onClick={() => { setIsLoginView(true); setErrorMsg(''); }}
           >
             기존 계정 로그인
           </button>
-          <button 
+          <button
             className={`auth-modal-tab ${!isLoginView ? 'active' : ''}`}
             onClick={() => { setIsLoginView(false); setErrorMsg(''); }}
           >
@@ -86,25 +87,25 @@ export default function AuthModal({ onClose, onSuccess }: AuthModalProps) {
         </div>
 
         <form onSubmit={handleAuth} className="auth-modal-form">
-          <input 
-            type={email.toLowerCase() === 'admin' ? 'text' : 'email'} 
-            placeholder="이메일 (admin은 'admin' 입력)" 
-            value={email} 
-            onChange={e => setEmail(e.target.value)} 
-            required 
+          <input
+            type={email.toLowerCase() === 'admin' ? 'text' : 'email'}
+            placeholder="이메일 (admin은 'admin' 입력)"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            required
             autoComplete="username"
           />
-          <input 
-            type="password" 
-            placeholder="비밀번호" 
-            value={password} 
-            onChange={e => setPassword(e.target.value)} 
-            required 
-            autoComplete={isLoginView ? "current-password" : "new-password"}
+          <input
+            type="password"
+            placeholder="비밀번호"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            required
+            autoComplete={isLoginView ? 'current-password' : 'new-password'}
           />
-          
+
           {errorMsg && <div className="auth-error">{errorMsg}</div>}
-          
+
           <button type="submit" className="auth-submit-btn" disabled={loading}>
             {loading ? '처리 중...' : (isLoginView ? '로그인하기' : '회원가입하기')}
           </button>
@@ -124,4 +125,6 @@ export default function AuthModal({ onClose, onSuccess }: AuthModalProps) {
       </div>
     </div>
   );
+
+  return createPortal(modal, document.body);
 }
