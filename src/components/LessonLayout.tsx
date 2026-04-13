@@ -5,7 +5,7 @@ import Header from './Header';
 import Sidebar from './Sidebar';
 import SubsectionTOC from './SubsectionTOC';
 import LessonNav from './LessonNav';
-import NotePanel from './NotePanel'; // 기존 React 컴포넌트 재사용
+import NotePanel from './NotePanel';
 import { Lesson, weeks } from '../data/curriculum';
 
 interface LessonLayoutProps {
@@ -16,9 +16,19 @@ interface LessonLayoutProps {
 export default function LessonLayout({ lesson, children }: LessonLayoutProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isNoteOpen, setIsNoteOpen] = useState(false);
+  const [isWide, setIsWide] = useState(true); // 1280px 초과 여부
 
   useEffect(() => {
-    // 테마 전환 버튼 (Header 컴포넌트 내부에 적용됨)
+    const mq = window.matchMedia('(min-width: 1281px)');
+    setIsWide(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsWide(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+
+  useEffect(() => {
     const storedProgress = localStorage.getItem('progress');
     if (storedProgress) {
       try {
@@ -39,7 +49,6 @@ export default function LessonLayout({ lesson, children }: LessonLayoutProps) {
   }, [lesson.id]);
 
   useEffect(() => {
-    // 문서 제목 변경
     document.title = `${lesson.title} | 클로드 코드 배우기`;
   }, [lesson.title]);
 
@@ -57,19 +66,28 @@ export default function LessonLayout({ lesson, children }: LessonLayoutProps) {
   const weekTitle = weeks.find(w => w.number === lesson.week)?.title ?? '';
 
   useEffect(() => {
-    // 모바일 사이드바 토글 연동
     const btn = document.getElementById('mobileMenuBtn');
     const handleToggle = () => setIsMobileMenuOpen(prev => !prev);
     btn?.addEventListener('click', handleToggle);
     return () => btn?.removeEventListener('click', handleToggle);
   }, []);
 
+  // 사이드바 접힘 상태를 grid에 반영
+  const sidebarCol = isSidebarCollapsed ? '64px' : 'var(--sidebar-width)';
+  const contentStyle: React.CSSProperties = isWide
+    ? { gridTemplateColumns: `${sidebarCol} 1fr 340px` }
+    : { gridTemplateColumns: `${sidebarCol} 1fr` };
+
   return (
     <div className="page-wrapper">
       <Header showMobileMenu={true} />
 
-      <div className="content-wrapper">
-        <Sidebar currentSlug={lesson.slug} />
+      <div className="content-wrapper" style={contentStyle}>
+        <Sidebar
+          currentSlug={lesson.slug}
+          collapsed={isSidebarCollapsed}
+          onToggleCollapse={() => setIsSidebarCollapsed(prev => !prev)}
+        />
 
         <main className="lesson-main">
           <div className="lesson-header">
@@ -101,12 +119,42 @@ export default function LessonLayout({ lesson, children }: LessonLayoutProps) {
       </div>
 
       {isMobileMenuOpen && (
-        <div 
-          className="sidebar-overlay open" 
+        <div
+          className="sidebar-overlay open"
           onClick={() => setIsMobileMenuOpen(false)}
         ></div>
       )}
       <Sidebar currentSlug={lesson.slug} isMobile={true} />
+
+      {/* 메모 플로팅 버튼 (좁은 화면에서 note-aside가 숨겨질 때 표시) */}
+      <button
+        className={`note-fab ${isNoteOpen ? 'note-fab--active' : ''}`}
+        onClick={() => setIsNoteOpen(prev => !prev)}
+        aria-label="메모 열기/닫기"
+        title="내 메모"
+      >
+        <span className="note-fab__icon">📝</span>
+      </button>
+
+      {/* 메모 드로어 (좁은 화면) */}
+      {isNoteOpen && (
+        <div className="note-drawer-overlay" onClick={() => setIsNoteOpen(false)} />
+      )}
+      <div className={`note-drawer ${isNoteOpen ? 'note-drawer--open' : ''}`}>
+        <div className="note-drawer__header">
+          <span style={{ fontWeight: 700, fontSize: '0.9rem' }}>내 메모</span>
+          <button
+            className="note-drawer__close"
+            onClick={() => setIsNoteOpen(false)}
+            aria-label="메모 닫기"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M18 6L6 18M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+        <NotePanel lessonId={lesson.id} />
+      </div>
     </div>
   );
 }

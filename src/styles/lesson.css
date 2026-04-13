@@ -14,6 +14,7 @@
   margin: 0 auto;
   width: 100%;
   align-items: start;
+  transition: grid-template-columns 0.25s ease;
 }
 
 /* ── 사이드바 ── */
@@ -25,6 +26,48 @@
   border-right: 1px solid var(--color-border);
   padding: 2rem 0;
   background: var(--color-bg);
+  transition: width 0.25s ease;
+}
+
+/* 접힌 사이드바 */
+.sidebar--collapsed {
+  overflow: hidden;
+  padding: 1rem 0;
+}
+
+/* 사이드바 접기/펼치기 버튼 */
+.sidebar-collapse-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  margin: 0 auto 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-bg);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.sidebar-collapse-btn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+/* 접힌 상태에서 중앙 아이콘 */
+.sidebar-collapsed-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 0.5rem;
+}
+
+.sidebar-collapsed-pct {
+  cursor: default;
 }
 
 .sidebar-week {
@@ -334,13 +377,116 @@
   text-overflow: ellipsis;
 }
 
+/* ── 메모 플로팅 버튼 (FAB) ── */
+.note-fab {
+  display: none; /* 기본: 숨김. 좁은 화면에서만 표시 */
+  position: fixed;
+  bottom: 1.75rem;
+  right: 1.75rem;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: none;
+  background: var(--color-primary);
+  color: var(--color-text);
+  font-size: 1.4rem;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  z-index: 110;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s ease;
+}
+
+.note-fab:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+
+.note-fab--active {
+  transform: scale(1.05) rotate(10deg);
+}
+
+.note-fab__icon {
+  display: block;
+  line-height: 1;
+}
+
+/* 메모 드로어 */
+.note-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 120;
+  backdrop-filter: blur(2px);
+}
+
+.note-drawer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-height: 75vh;
+  background: var(--color-bg);
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -8px 30px rgba(0,0,0,0.15);
+  z-index: 130;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.note-drawer--open {
+  transform: translateY(0);
+}
+
+.note-drawer__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.note-drawer__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.note-drawer__close:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+  background: #fef2f2;
+}
+
+.note-drawer .note-panel {
+  margin-top: 0;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  flex: 1;
+  overflow-y: auto;
+}
+
 /* ── 반응형 ── */
 @media (max-width: 1280px) {
-  .content-wrapper {
-    grid-template-columns: var(--sidebar-width) 1fr;
-  }
   .note-aside {
     display: none;
+  }
+  .note-fab {
+    display: flex;
   }
 }
 
