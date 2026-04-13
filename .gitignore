@@ -7,3 +7,6 @@ dist/
 .vercel
 .next
 out
+.env*.local
+bun.lock
+fix-jsx.js
