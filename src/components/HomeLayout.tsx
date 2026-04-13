@@ -5,7 +5,7 @@ export default function HomeLayout({ children }: { children: React.ReactNode }) 
   return (
     <div className="page-wrapper home-page">
       <Header />
-      <main className="content-wrapper home-main">
+      <main className="home-main">
         {children}
       </main>
       

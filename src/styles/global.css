@@ -1,29 +1,43 @@
-/* ── CSS 변수 (라이트 모드 기본값) ── */
+/* ── CSS 변수 (Joyful Play - Students Theme) ── */
 :root {
-  /* Warm / Soft Backgrounds */
-  --color-bg: #fcfcfd;
-  --color-bg-secondary: #f3f4f8;
-  --color-bg-hover: #e8eaef;
-  --color-border: #e0e4ed;
-  --color-border-light: #eceef4;
-  --color-text: #1a1d27;
-  --color-text-muted: #5f677a;
-  --color-text-faint: #8d95a5;
+  /* Soft & Bright Backgrounds */
+  --color-bg: #fdfdff;
+  --color-bg-secondary: #f0f7ff;
+  --color-bg-hover: #e6f0ff;
+  --color-border: #dbe9fe;
+  --color-border-light: #f1f5f9;
+  --color-text: #1e293b;
+  --color-text-muted: #64748b;
+  --color-text-faint: #94a3b8;
   
-  /* Cosmic / Aurora Primary (Pinkish-Purple to Cyan) */
-  --color-primary: #f43f5e;       /* Rose/Pink */
-  --color-primary-hover: #e11d48;
-  --color-primary-light: #ffe4e6;
-  --color-primary-glow: rgba(244, 63, 94, 0.2);
+  /* Playful & Vibrant Primary (Sunny Yellow / Pop Pink / Sky Blue) */
+  --color-primary: #ffcc00;       /* Sunny Yellow */
+  --color-primary-hover: #ffbb00;
+  --color-primary-light: #fff9db;
+  --color-primary-glow: rgba(255, 204, 0, 0.3);
   
-  --color-accent: #3b82f6;        /* Bright Blue */
-  --color-accent-light: #dbeafe;
+  --color-accent: #ff4d94;        /* Pop Pink */
+  --color-accent-light: #fff0f6;
   
-  --color-weekend: #f59e0b;
-  --color-week1: #f43f5e;
-  --color-week2: #8b5cf6;
-  --color-week3: #0ea5e9;
-  --color-week4: #10b981;
+  --color-weekend: #3ecf8e;       /* Fresh Green */
+  --color-week1: #ffcc00;
+  --color-week2: #ff4d94;
+  --color-week3: #33ccff;         /* Sky Blue */
+  --color-week4: #7c4dff;         /* Cool Purple */
+
+  --sidebar-width: 280px;
+  --toc-width: 220px;
+  --header-height: 72px;
+
+  /* Extreme Curvature for Kids */
+  --radius-sm: 12px;
+  --radius-md: 32px;
+  --radius-lg: 40px;
+  --radius-xl: 60px;
+
+  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 12px 20px -3px rgba(255, 204, 0, 0.2), 0 4px 8px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 25px 30px -5px rgba(255, 77, 148, 0.2), 0 10px 15px -5px rgba(0, 0, 0, 0.1);
 
   --sidebar-width: 270px;
   --toc-width: 220px;
@@ -43,34 +57,34 @@
   --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
 }
 
-/* ── 다크 모드 ── */
+/* ── 다크 모드 (Playful Dark) ── */
 html[data-theme="dark"] {
-  --color-bg: #0b0c10;
-  --color-bg-secondary: #16181d;
-  --color-bg-hover: #1f2229;
-  --color-border: #232730;
-  --color-border-light: #1b1e25;
-  --color-text: #f0f2f5;
-  --color-text-muted: #a0a6b5;
-  --color-text-faint: #6c7383;
+  --color-bg: #111827;
+  --color-bg-secondary: #1f2937;
+  --color-bg-hover: #374151;
+  --color-border: #374151;
+  --color-border-light: #1f2937;
+  --color-text: #f9fafb;
+  --color-text-muted: #9ca3af;
+  --color-text-faint: #6b7280;
   
-  /* Neon Lights */
-  --color-primary: #fb7185;
-  --color-primary-hover: #fda4af;
-  --color-primary-light: #301720;
-  --color-primary-glow: rgba(251, 113, 133, 0.25);
+  /* Neon Pops */
+  --color-primary: #ffe066;
+  --color-primary-hover: #fff3bf;
+  --color-primary-light: #2d2a15;
+  --color-primary-glow: rgba(255, 224, 102, 0.25);
   
-  --color-accent: #60a5fa;
-  --color-accent-light: #16243d;
+  --color-accent: #ff85b3;
+  --color-accent-light: #3d1b29;
   
-  --color-week1: #fb7185;
-  --color-week2: #a78bfa;
-  --color-week3: #38bdf8;
-  --color-week4: #34d399;
+  --color-week1: #ffe066;
+  --color-week2: #ff85b3;
+  --color-week3: #7dd3fc;
+  --color-week4: #b794f4;
 
-  --shadow-sm: 0 2px 4px rgba(0,0,0,.4);
+  --shadow-sm: 0 4px 6px rgba(0,0,0,.4);
   --shadow-md: 0 10px 20px rgba(0,0,0,.5);
-  --shadow-lg: 0 20px 40px rgba(0,0,0,.6), 0 0 40px rgba(251, 113, 133, 0.08);
+  --shadow-lg: 0 20px 40px rgba(0,0,0,.6), 0 0 40px rgba(255, 224, 102, 0.1);
 }
 
 /* ── 리셋 & 기본 ── */
